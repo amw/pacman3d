@@ -1,26 +1,20 @@
-#include <QGLWidget>
-#include <QSize>
+#include <QWidget>
 
-class QKeyEvent;
+class Game;
+class QGLWidget;
+class QHBoxLayout;
 
-class GameWindow : public QGLWidget {
+class GameWindow : public QWidget {
   Q_OBJECT
 
   public:
     GameWindow( QWidget* parent );
     ~GameWindow();
-    QSize minimumSizeHint() const;
-    QSize sizeHint() const;
-    virtual void keyPressEvent( QKeyEvent* event );
     bool initialize();
-    void start();
-
-  protected:
-    void initializeGL();
-    void resizeGL( int w, int h );
-    void paintGL();
+    virtual void keyPressEvent( QKeyEvent* event );
 
   private:
-    QColor background;
+    QHBoxLayout* layout;
+    Game* game;
 };
 

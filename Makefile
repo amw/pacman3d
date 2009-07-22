@@ -9,5 +9,10 @@ pacman3d.app: src/Makefile force
 src/Makefile: src/pacman3d.pro force
 	cd src && qmake pacman3d.pro
 
+clean:
+	cd src && $(MAKE) clean;
+	rm -fr tmp
+	rm src/Makefile
+
 force:
 

@@ -8,14 +8,12 @@ int main( int argc, char ** argv ) {
   QApplication app( argc, argv );
   QDir::setCurrent( QApplication::applicationDirPath() );
 
-  GameWindow game( NULL );
+  GameWindow window( NULL );
 
-  if ( ! game.initialize() ) {
+  if ( ! window.initialize() ) {
     qDebug() << "Couldn't initialize game window.";
     return 0;
   }
-
-  game.start();
 
   return app.exec();
 }
