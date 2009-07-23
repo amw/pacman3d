@@ -21,5 +21,7 @@ class Game : public QGLWidget {
 
   private:
     QColor background;
+    double x, y, z;
+    double zoom;
 };
 

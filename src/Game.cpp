@@ -4,7 +4,10 @@
 Game::Game( QWidget* parent )
   : QGLWidget( parent )
 {
-  background = QColor::fromRgbF( 0.5, 0.9, 0.5 );
+  this->background = QColor::fromRgbF( 0.5, 0.9, 0.5 );
+  this->x = 0.0f;
+  this->y = 0.0f;
+  this->zoom = -10.0f;
 }
 
 Game::~Game() {
@@ -24,6 +27,7 @@ bool Game::initialize() {
 }
 
 void Game::start() {
+  this->grabKeyboard();
 }
 
 void Game::initializeGL() {
@@ -39,14 +43,14 @@ void Game::resizeGL( int width, int height ) {
 
   glMatrixMode( GL_PROJECTION );
   glLoadIdentity();
-  glFrustum( -0.5, +0.5, +0.5, -0.5, 4.0, 15.0 );
+  glFrustum( -1.0, +1.0, -1.0, +1.0, 5.0, 100.0 );
   glMatrixMode( GL_MODELVIEW );
 }
 
 void Game::paintGL() {
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
   glLoadIdentity();
-  glTranslated( -0.5, -0.5, -5.0 );
+  glTranslated( this->x, this->y, this->zoom );
 
   glBegin(GL_QUADS);
   {
@@ -90,6 +94,31 @@ void Game::paintGL() {
 }
 
 void Game::keyPressEvent( QKeyEvent* event ) {
-  event->ignore();
+  if ( event->key() == Qt::Key_Left ) {
+    this->x -= 0.1f;
+    event->accept();
+  }
+  else if ( event->key() == Qt::Key_Right ) {
+    this->x += 0.1f;
+    event->accept();
+  }
+  else if ( event->key() == Qt::Key_Up ) {
+    this->y += 0.1f;
+    event->accept();
+  }
+  else if ( event->key() == Qt::Key_Down ) {
+    this->y -= 0.1f;
+    event->accept();
+  }
+  else if ( event->key() == Qt::Key_Equal ) {
+    this->zoom += 0.3f;
+  }
+  else if ( event->key() == Qt::Key_Minus ) {
+    this->zoom -= 0.3f;
+  }
+  else {
+    event->ignore();
+  }
+  this->updateGL();
 }
 
