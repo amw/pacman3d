@@ -39,11 +39,14 @@ void Game::initializeGL() {
 
 void Game::resizeGL( int width, int height ) {
   int side = qMin( width, height );
-  glViewport( ( width - side ) / 2, ( height - side ) / 2, side, side );
+  glViewport( 0, 0, width, height );
 
   glMatrixMode( GL_PROJECTION );
   glLoadIdentity();
-  glFrustum( -1.0, +1.0, -1.0, +1.0, 5.0, 100.0 );
+
+  double xr = (double) width / (double) side;
+  double yr = (double) height / (double) side;
+  glFrustum( -xr, +xr, -yr, +yr, 5.0, 100.0 );
   glMatrixMode( GL_MODELVIEW );
 }
 
