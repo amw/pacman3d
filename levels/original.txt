@@ -1,0 +1,20 @@
+........X........
+.XX.XXX.X.XXX.XX.
+SXX.XXX.X.XXX.XXS
+.................
+.XX.X.XXXXX.X.XX.
+....X...X...X....
+XXX.XXX X XXX.XXX
+XXX.X       X.XXX
+XXX.X XX=XX X.XXX
+1  .  XGGGX  .  1
+XXX.X XXXXX X.XXX
+XXX.X       X.XXX
+XXX.X XXXXX X.XXX
+........X........
+.XX.XXX.X.XXX.XX.
+S.X...........X.S
+X.X.X.XXXXX.X.X.X
+....X...X...X....
+.XXXXXX.X.XXXXXX.
+.................
