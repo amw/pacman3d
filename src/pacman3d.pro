@@ -1,22 +1,22 @@
-TEMPLATE = app
 TARGET = pacman3d
-QT += opengl
-
-SOURCES = *.cpp
-HEADERS = *.hpp
-
-LIBS += -lGLEW
 
 DESTDIR     = ./../
 DLLDESTDIR  = ./../
 OBJECTS_DIR = ./../tmp
 MOC_DIR     = ./../tmp
 
-unix {
-  CONFIG += debug
-}
+QT += opengl
+
+CONFIG += debug
+CONFIG += warn_on
+
+LIBS += -lGLEW
 
 macx {
+  CONFIG -= app_bundle
   INCLUDEPATH += /opt/local/include
 }
+
+SOURCES = *.cpp
+HEADERS = *.hpp
 

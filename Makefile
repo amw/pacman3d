@@ -1,9 +1,9 @@
 
 first: bin
 
-bin: pacman3d.app
+bin: pacman3d
 
-pacman3d.app: src/Makefile force
+pacman3d: src/Makefile force
 	cd src && $(MAKE)
 
 src/Makefile: src/pacman3d.pro force
