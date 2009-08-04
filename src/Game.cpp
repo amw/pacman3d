@@ -2,7 +2,8 @@
 #include <QKeyEvent>
 
 Game::Game( QWidget* parent )
-  : QGLWidget( parent )
+  : QGLWidget( parent ),
+    board( "original" )
 {
   this->background = QColor::fromRgbF( 0.5, 0.9, 0.5 );
   this->x = 0.0f;
@@ -23,6 +24,10 @@ QSize Game::sizeHint() const {
 }
 
 bool Game::initialize() {
+  if ( ! this->board.initialize() ) {
+    return false;
+  }
+
   return true;
 }
 
@@ -35,6 +40,8 @@ void Game::initializeGL() {
   glShadeModel( GL_FLAT );
   glEnable( GL_DEPTH_TEST );
   glEnable( GL_CULL_FACE );
+
+  this->board.initializeGL();
 }
 
 void Game::resizeGL( int width, int height ) {
@@ -55,45 +62,7 @@ void Game::paintGL() {
   glLoadIdentity();
   glTranslated( this->x, this->y, this->zoom );
 
-  glBegin(GL_QUADS);
-  {
-    glColor3f( 1.0, 0.0, 0.0 );
-    glTexCoord2f(0.0f, 0.0f); glVertex3f(-0.1f, -0.1f,  0.1f);
-    glTexCoord2f(0.1f, 0.0f); glVertex3f( 0.1f, -0.1f,  0.1f);
-    glTexCoord2f(0.1f, 0.1f); glVertex3f( 0.1f,  0.1f,  0.1f);
-    glTexCoord2f(0.0f, 0.1f); glVertex3f(-0.1f,  0.1f,  0.1f);
-
-    glColor3f( 0.0, 1.0, 0.0 );
-    glTexCoord2f(0.1f, 0.0f); glVertex3f(-0.1f, -0.1f, -0.1f);
-    glTexCoord2f(0.1f, 0.1f); glVertex3f(-0.1f,  0.1f, -0.1f);
-    glTexCoord2f(0.0f, 0.1f); glVertex3f( 0.1f,  0.1f, -0.1f);
-    glTexCoord2f(0.0f, 0.0f); glVertex3f( 0.1f, -0.1f, -0.1f);
-
-    glColor3f( 0.0, 0.0, 1.0 );
-    glTexCoord2f(0.0f, 0.1f); glVertex3f(-0.1f,  0.1f, -0.1f);
-    glTexCoord2f(0.0f, 0.0f); glVertex3f(-0.1f,  0.1f,  0.1f);
-    glTexCoord2f(0.1f, 0.0f); glVertex3f( 0.1f,  0.1f,  0.1f);
-    glTexCoord2f(0.1f, 0.1f); glVertex3f( 0.1f,  0.1f, -0.1f);
-
-    glColor3f( 1.0, 0.0, 1.0 );
-    glTexCoord2f(0.1f, 0.1f); glVertex3f(-0.1f, -0.1f, -0.1f);
-    glTexCoord2f(0.0f, 0.1f); glVertex3f( 0.1f, -0.1f, -0.1f);
-    glTexCoord2f(0.0f, 0.0f); glVertex3f( 0.1f, -0.1f,  0.1f);
-    glTexCoord2f(0.1f, 0.0f); glVertex3f(-0.1f, -0.1f,  0.1f);
-
-    glColor3f( 1.0, 1.0, 1.0 );
-    glTexCoord2f(0.1f, 0.0f); glVertex3f( 0.1f, -0.1f, -0.1f);
-    glTexCoord2f(0.1f, 0.1f); glVertex3f( 0.1f,  0.1f, -0.1f);
-    glTexCoord2f(0.0f, 0.1f); glVertex3f( 0.1f,  0.1f,  0.1f);
-    glTexCoord2f(0.0f, 0.0f); glVertex3f( 0.1f, -0.1f,  0.1f);
-
-    glColor3f( 0.0, 1.0, 1.0 );
-    glTexCoord2f(0.0f, 0.0f); glVertex3f(-0.1f, -0.1f, -0.1f);
-    glTexCoord2f(0.1f, 0.0f); glVertex3f(-0.1f, -0.1f,  0.1f);
-    glTexCoord2f(0.1f, 0.1f); glVertex3f(-0.1f,  0.1f,  0.1f);
-    glTexCoord2f(0.0f, 0.1f); glVertex3f(-0.1f,  0.1f, -0.1f);
-  }
-  glEnd();
+  this->board.render();
 }
 
 void Game::keyPressEvent( QKeyEvent* event ) {

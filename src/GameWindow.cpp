@@ -26,6 +26,8 @@ bool GameWindow::initialize() {
   }
 
   this->show();
+  this->raise();
+  this->activateWindow();
 
   this->game->start();
 

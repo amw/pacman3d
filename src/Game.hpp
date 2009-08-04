@@ -1,4 +1,5 @@
 #include <QGLWidget>
+#include "GameBoard.hpp"
 
 class QKeyEvent;
 
@@ -20,6 +21,7 @@ class Game : public QGLWidget {
     void paintGL();
 
   private:
+    GameBoard board;
     QColor background;
     double x, y, z;
     double zoom;
