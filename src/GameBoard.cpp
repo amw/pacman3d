@@ -138,6 +138,7 @@ bool GameBoard::readBoardBlocks( QFile & map ) {
           break;
         case BLOCK_PLAYER_START:
           if ( foundPlayerStart ) {
+            qDebug() << "Only one player start position allowed.";
             return false;
           }
           foundPlayerStart = true;
