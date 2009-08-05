@@ -11,7 +11,7 @@
 #define BLOCK_GHOSTS_START 'G'
 #define BLOCK_PLAYER_WALL '='
 
-#define BLOCK_WIDTH 0.2f
+#define BLOCK_WIDTH 1.0f
 
 class GameBoard : QObject {
   Q_OBJECT

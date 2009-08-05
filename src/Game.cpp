@@ -1,5 +1,6 @@
 #include "Game.hpp"
 #include <QKeyEvent>
+#include <QDebug>
 
 Game::Game( QWidget* parent )
   : QGLWidget( parent ),
@@ -8,7 +9,7 @@ Game::Game( QWidget* parent )
   this->background = QColor::fromRgbF( 0.5, 0.9, 0.5 );
   this->x = 0.0f;
   this->y = 0.0f;
-  this->zoom = -10.0f;
+  this->z = -90.f;
 }
 
 Game::~Game() {
@@ -53,14 +54,14 @@ void Game::resizeGL( int width, int height ) {
 
   double xr = (double) width / (double) side;
   double yr = (double) height / (double) side;
-  glFrustum( -xr, +xr, -yr, +yr, 5.0, 100.0 );
+  glFrustum( -xr, +xr, -yr, +yr, 7.0, 100.0 );
   glMatrixMode( GL_MODELVIEW );
 }
 
 void Game::paintGL() {
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
   glLoadIdentity();
-  glTranslated( this->x, this->y, this->zoom );
+  glTranslated( this->x, this->y, this->z );
 
   this->board.render();
 }
@@ -83,10 +84,12 @@ void Game::keyPressEvent( QKeyEvent* event ) {
     event->accept();
   }
   else if ( event->key() == Qt::Key_Equal ) {
-    this->zoom += 0.3f;
+    this->z += 0.5f;
+    qDebug() << "Setting zoom to:" << this->z;
   }
   else if ( event->key() == Qt::Key_Minus ) {
-    this->zoom -= 0.3f;
+    this->z -= 0.5f;
+    qDebug() << "Setting zoom to:" << this->z;
   }
   else {
     event->ignore();
