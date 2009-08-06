@@ -6,7 +6,7 @@ Game::Game( QWidget* parent )
   : QGLWidget( parent ),
     board( "original" )
 {
-  this->background = QColor::fromRgbF( 0.5, 0.9, 0.5 );
+  this->background = QColor::fromRgbF( 0.1, 0.1, 0.1 );
   this->x = 0.0f;
   this->y = 0.0f;
   this->z = -90.f;
