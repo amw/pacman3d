@@ -41,8 +41,10 @@ void Game::initializeGL() {
   glShadeModel( GL_FLAT );
   glEnable( GL_DEPTH_TEST );
   glEnable( GL_CULL_FACE );
+  glEnable( GL_TEXTURE_2D );
+  glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
 
-  this->board.initializeGL();
+  this->board.initializeGL( *this );
 }
 
 void Game::resizeGL( int width, int height ) {
@@ -63,7 +65,7 @@ void Game::paintGL() {
   glLoadIdentity();
   glTranslated( this->x, this->y, this->z );
 
-  this->board.render();
+  this->board.render( *this );
 }
 
 void Game::keyPressEvent( QKeyEvent* event ) {
@@ -84,11 +86,11 @@ void Game::keyPressEvent( QKeyEvent* event ) {
     event->accept();
   }
   else if ( event->key() == Qt::Key_Equal ) {
-    this->z += 0.5f;
+    this->z += 3.0f;
     qDebug() << "Setting zoom to:" << this->z;
   }
   else if ( event->key() == Qt::Key_Minus ) {
-    this->z -= 0.5f;
+    this->z -= 3.0f;
     qDebug() << "Setting zoom to:" << this->z;
   }
   else {

@@ -20,14 +20,15 @@ class GameBoard : QObject {
     GameBoard( QString name );
     ~GameBoard();
     bool initialize();
-    void initializeGL();
-    void render();
+    void initializeGL( QGLWidget & target );
+    void render( QGLWidget & target );
 
   private:
     bool readBoardSize( QFile & map );
     void initBlocksToWalls();
     bool readBoardBlocks( QFile & map );
     void addWallBlock( double x, double y );
+    void addFloorBlock( double x, double y, GLuint texture );
 
   private:
     QString name;
@@ -36,6 +37,10 @@ class GameBoard : QObject {
     int** blocks;
     bool allocatedBlocks;
     GLuint wallsList;
+    GLuint wallTexture;
+    GLuint roofTexture;
+    GLuint grassTexture;
+    GLuint ghostsStartTexture;
 
     enum BlockTypes {
       Wall, Dot, Path, Powerup, Teleport1, PlayerStart, GhostsStart, PlayerWall
