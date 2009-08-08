@@ -55,11 +55,18 @@ void Game::resizeGL( int width, int height ) {
   glLoadIdentity();
 
   gluPerspective( 45, (double) width / (double) height, 0.5f, 35.0f );
-  glMatrixMode( GL_MODELVIEW );
+
+  gluLookAt(
+    5.0f, -5.0f, -25.0f,
+    0.0f,  0.0f, -28.0f,
+    0.0f,  0.0f,   1.0f
+  );
 }
 
 void Game::paintGL() {
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+  glMatrixMode( GL_MODELVIEW );
   glLoadIdentity();
 
   glTranslated( this->x, this->y, this->z );
