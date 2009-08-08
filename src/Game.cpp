@@ -9,7 +9,7 @@ Game::Game( QWidget* parent )
   this->background = QColor::fromRgbF( 0.1, 0.1, 0.1 );
   this->x = 0.0f;
   this->y = 0.0f;
-  this->z = -90.f;
+  this->z = -30.f;
 }
 
 Game::~Game() {
@@ -49,15 +49,12 @@ void Game::initializeGL() {
 }
 
 void Game::resizeGL( int width, int height ) {
-  int side = qMin( width, height );
   glViewport( 0, 0, width, height );
 
   glMatrixMode( GL_PROJECTION );
   glLoadIdentity();
 
-  double xr = (double) width / (double) side;
-  double yr = (double) height / (double) side;
-  glFrustum( -xr, +xr, -yr, +yr, 7.0, 100.0 );
+  gluPerspective( 45, (double) width / (double) height, 0.5f, 35.0f );
   glMatrixMode( GL_MODELVIEW );
 }
 
@@ -90,11 +87,11 @@ void Game::keyPressEvent( QKeyEvent* event ) {
     event->accept();
   }
   else if ( event->key() == Qt::Key_Equal ) {
-    this->z += 3.0f;
+    this->z += 0.4f;
     qDebug() << "Setting zoom to:" << this->z;
   }
   else if ( event->key() == Qt::Key_Minus ) {
-    this->z -= 3.0f;
+    this->z -= 0.4f;
     qDebug() << "Setting zoom to:" << this->z;
   }
   else {
