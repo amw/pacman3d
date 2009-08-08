@@ -1,5 +1,6 @@
-#include <QGLWidget>
 #include "GameBoard.hpp"
+#include "PacMan.hpp"
+#include <QGLWidget>
 
 class QKeyEvent;
 
@@ -22,6 +23,7 @@ class Game : public QGLWidget {
 
   private:
     GameBoard board;
+    PacMan hero;
     QColor background;
     double x, y, z;
 };

@@ -45,6 +45,7 @@ void Game::initializeGL() {
   glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
 
   this->board.initializeGL( *this );
+  this->hero.initializeGL( *this );
 }
 
 void Game::resizeGL( int width, int height ) {
@@ -63,9 +64,13 @@ void Game::resizeGL( int width, int height ) {
 void Game::paintGL() {
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
   glLoadIdentity();
-  glTranslated( this->x, this->y, this->z );
 
+  glTranslated( this->x, this->y, this->z );
   this->board.render( *this );
+
+  glTranslatef( 0.0f, 0.0f, 2.0f );
+  glScalef( 0.5f, 0.5f, 0.5f );
+  this->hero.render( *this );
 }
 
 void Game::keyPressEvent( QKeyEvent* event ) {
