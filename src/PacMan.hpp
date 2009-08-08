@@ -14,6 +14,7 @@ class PacMan : public QObject {
     void addSphereVertex( int theta, int phi );
 
   private:
+    GLUquadric* sphereQuadric;
     GLuint sphereList;
     GLuint pacmanTexture;
 };

@@ -69,7 +69,6 @@ void Game::paintGL() {
   this->board.render( *this );
 
   glTranslatef( 0.0f, 0.0f, 2.0f );
-  glScalef( 0.5f, 0.5f, 0.5f );
   this->hero.render( *this );
 }
 
