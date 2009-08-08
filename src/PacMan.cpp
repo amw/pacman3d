@@ -1,8 +1,6 @@
 #include "PacMan.hpp"
 #include <math.h>
 
-#define DEG_TO_RAD 0.0174532925f
-
 
 struct XYZ {
   double x;
