@@ -234,13 +234,11 @@ void GameBoard::addWallBlock( double x1, double y1 ) {
   glBindTexture( GL_TEXTURE_2D, this->wallTexture );
   glBegin( GL_QUADS );
   {
-    glColor3f( 0.6f, 0.6f, 0.3f );
     glTexCoord2f( 0.0f, 0.0f ); glVertex3d( x1, y1, z2 );
     glTexCoord2f( 1.0f, 0.0f ); glVertex3d( x2, y1, z2 );
     glTexCoord2f( 1.0f, 1.0f ); glVertex3d( x2, y2, z2 );
     glTexCoord2f( 0.0f, 1.0f ); glVertex3d( x1, y2, z2 );
 
-    glColor3f( 0.3f, 0.3f, 0.3f );
     glTexCoord2f( 1.0f, 0.0f ); glVertex3d( x1, y1, z1 );
     glTexCoord2f( 1.0f, 1.0f ); glVertex3d( x1, y2, z1 );
     glTexCoord2f( 0.0f, 1.0f ); glVertex3d( x2, y2, z1 );
@@ -278,7 +276,6 @@ void GameBoard::addFloorBlock( double x1, double y1, GLuint texture ) {
   glBindTexture( GL_TEXTURE_2D, texture );
   glBegin( GL_QUADS );
   {
-    glColor3f( 0.2f, 0.6f, 0.3f );
     glTexCoord2f( 0.0f, 0.0f ); glVertex3d( x1, y1, z2 );
     glTexCoord2f( 1.0f, 0.0f ); glVertex3d( x2, y1, z2 );
     glTexCoord2f( 1.0f, 1.0f ); glVertex3d( x2, y2, z2 );
