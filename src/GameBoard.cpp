@@ -80,6 +80,9 @@ bool GameBoard::readBoardSize( QFile & map ) {
   this->width += 2;
   this->height += 2;
 
+  this->boardXOffset = - ( this->width * BLOCK_WIDTH ) / 2.0f;
+  this->boardYOffset = - ( this->height * BLOCK_WIDTH ) / 2.0f;
+
   return true;
 }
 
@@ -185,38 +188,32 @@ void GameBoard::initializeGL( QGLWidget & target ) {
   this->wallsList = glGenLists( 1 );
   glNewList( this->wallsList, GL_COMPILE );
   {
-    double boardXOffset = - ( this->width * BLOCK_WIDTH ) / 2.0f;
-    double boardYOffset = - ( this->height * BLOCK_WIDTH ) / 2.0f;
-
     for ( int y = 0; y < this->height; ++y ) {
       for ( int x = 0; x < this->width; ++x ) {
-        double blockXOffset = boardXOffset + BLOCK_WIDTH * x;
-        double blockYOffset = boardYOffset + BLOCK_WIDTH * y;
-
         if ( GameBoard::Wall == this->blocks[ y ][ x ] ) {
-          this->addWallBlock( blockXOffset, blockYOffset );
+          this->addWallBlock( x, y );
         }
         else if ( GameBoard::Path == this->blocks[ y ][ x ] ) {
-          this->addFloorBlock( blockXOffset, blockYOffset, this->grassTexture );
+          this->addFloorBlock( x, y, this->grassTexture );
         }
         else if ( GameBoard::Dot == this->blocks[ y ][ x ] ) {
-          this->addFloorBlock( blockXOffset, blockYOffset, this->grassTexture );
+          this->addFloorBlock( x, y, this->grassTexture );
         }
         else if ( GameBoard::Powerup == this->blocks[ y ][ x ] ) {
-          this->addFloorBlock( blockXOffset, blockYOffset, this->grassTexture );
+          this->addFloorBlock( x, y, this->grassTexture );
         }
         else if ( GameBoard::Teleport1 == this->blocks[ y ][ x ] ) {
-          this->addFloorBlock( blockXOffset, blockYOffset, this->grassTexture );
+          this->addFloorBlock( x, y, this->grassTexture );
         }
         else if ( GameBoard::PlayerWall == this->blocks[ y ][ x ] ) {
-          this->addFloorBlock( blockXOffset, blockYOffset, this->roofTexture );
+          this->addFloorBlock( x, y, this->roofTexture );
         }
         else if ( GameBoard::PlayerStart == this->blocks[ y ][ x ] ) {
-          this->addFloorBlock( blockXOffset, blockYOffset, this->grassTexture );
+          this->addFloorBlock( x, y, this->grassTexture );
         }
         else if ( GameBoard::GhostsStart == this->blocks[ y ][ x ] ) {
           this->addFloorBlock(
-            blockXOffset, blockYOffset, this->ghostsStartTexture
+            x, y, this->ghostsStartTexture
           );
         }
       }
@@ -225,19 +222,28 @@ void GameBoard::initializeGL( QGLWidget & target ) {
   glEndList();
 }
 
-void GameBoard::addWallBlock( double x1, double y1 ) {
+void GameBoard::addWallBlock( int x, int y ) {
+  double x1 = this->boardXOffset + BLOCK_WIDTH * x;
   double x2 = x1 + BLOCK_WIDTH;
+
+  double y1 = this->boardYOffset + BLOCK_WIDTH * y;
   double y2 = y1 + BLOCK_WIDTH;
+
   double z1 = - BLOCK_WIDTH;
   double z2 = z1 + 2 * BLOCK_WIDTH;
+
+  double s1 = (double) x         / (double) this->width  * 4.0f;
+  double s2 = (double) ( x + 1 ) / (double) this->width  * 4.0f;
+  double t1 = (double) y         / (double) this->height * 4.0f;
+  double t2 = (double) ( y + 1 ) / (double) this->height * 4.0f;
 
   glBindTexture( GL_TEXTURE_2D, this->roofTexture );
   glBegin( GL_QUADS );
   {
-    glTexCoord2f( 0.0f, 0.0f ); glVertex3d( x1, y1, z2 );
-    glTexCoord2f( 1.0f, 0.0f ); glVertex3d( x2, y1, z2 );
-    glTexCoord2f( 1.0f, 1.0f ); glVertex3d( x2, y2, z2 );
-    glTexCoord2f( 0.0f, 1.0f ); glVertex3d( x1, y2, z2 );
+    glTexCoord2f( s1, t1 ); glVertex3d( x1, y1, z2 );
+    glTexCoord2f( s2, t1 ); glVertex3d( x2, y1, z2 );
+    glTexCoord2f( s2, t2 ); glVertex3d( x2, y2, z2 );
+    glTexCoord2f( s1, t2 ); glVertex3d( x1, y2, z2 );
   }
   glEnd();
 
@@ -272,9 +278,13 @@ void GameBoard::addWallBlock( double x1, double y1 ) {
   glEnd();
 }
 
-void GameBoard::addFloorBlock( double x1, double y1, GLuint texture ) {
+void GameBoard::addFloorBlock( int x, int y, GLuint texture ) {
+  double x1 = this->boardXOffset + BLOCK_WIDTH * x;
   double x2 = x1 + BLOCK_WIDTH;
+
+  double y1 = this->boardYOffset + BLOCK_WIDTH * y;
   double y2 = y1 + BLOCK_WIDTH;
+
   double z1 = - BLOCK_WIDTH;
   double z2 = 0.0f;
 

@@ -27,8 +27,8 @@ class GameBoard : QObject {
     bool readBoardSize( QFile & map );
     void initBlocksToWalls();
     bool readBoardBlocks( QFile & map );
-    void addWallBlock( double x, double y );
-    void addFloorBlock( double x, double y, GLuint texture );
+    void addWallBlock( int x, int y );
+    void addFloorBlock( int x, int y, GLuint texture );
 
   private:
     QString name;
@@ -36,6 +36,8 @@ class GameBoard : QObject {
     int height;
     int** blocks;
     bool allocatedBlocks;
+    double boardXOffset;
+    double boardYOffset;
     GLuint wallsList;
     GLuint wallTexture;
     GLuint roofTexture;
