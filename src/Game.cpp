@@ -6,10 +6,13 @@
 #include <QDebug>
 
 Game::Game( QWidget* parent )
-  : QGLWidget( parent ),
+  : QGLWidget(
+      QGLFormat( QGL::AlphaChannel | QGL::SampleBuffers ),
+      parent
+    ),
     board( "original" )
 {
-  this->background = QColor::fromRgbF( 0.1, 0.1, 0.1 );
+  this->background = QColor::fromRgbF( 0.2, 0.2, 0.2 );
   this->x = 0.0f;
   this->y = 0.0f;
   this->z = -30.f;
@@ -41,9 +44,16 @@ void Game::start() {
 
 void Game::initializeGL() {
   this->qglClearColor( this->background );
-  glShadeModel( GL_FLAT );
-  glEnable( GL_DEPTH_TEST );
+
+  glEnable( GL_MULTISAMPLE );
   glEnable( GL_CULL_FACE );
+
+  glDepthFunc( GL_LESS );
+  glEnable( GL_DEPTH_TEST );
+
+  glEnable( GL_BLEND );
+  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
   glEnable( GL_TEXTURE_2D );
   glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
 
@@ -52,6 +62,7 @@ void Game::initializeGL() {
 }
 
 void Game::resizeGL( int width, int height ) {
+  glMatrixMode( GL_MODELVIEW );
   glViewport( 0, 0, width, height );
 
   glMatrixMode( GL_PROJECTION );
