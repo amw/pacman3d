@@ -1,6 +1,9 @@
 #include "GameBoard.hpp"
 #include "PacMan.hpp"
 #include <QGLWidget>
+#include <QTime>
+
+#define MS_TO_REPORT_FPS 1000
 
 class QKeyEvent;
 
@@ -22,6 +25,11 @@ class Game : public QGLWidget {
     void paintGL();
 
   private:
+    void printFpsReport();
+
+  private:
+    QTime lastFpsReport;
+    int framesRenderedSinceLastReport;
     GameBoard board;
     PacMan hero;
     QColor background;

@@ -1,5 +1,8 @@
 #include "Game.hpp"
+#include <QApplication>
 #include <QKeyEvent>
+#include <QPaintEvent>
+#include <QRegion>
 #include <QDebug>
 
 Game::Game( QWidget* parent )
@@ -64,6 +67,8 @@ void Game::resizeGL( int width, int height ) {
 }
 
 void Game::paintGL() {
+  this->printFpsReport();
+
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
   glMatrixMode( GL_MODELVIEW );
@@ -72,8 +77,31 @@ void Game::paintGL() {
   glTranslated( this->x, this->y, this->z );
   this->board.render( *this );
 
-  glTranslatef( 0.0f, 0.0f, 2.0f );
+  glTranslatef( 0.0f, 1.5f, 0.5f );
   this->hero.render( *this );
+
+  qApp->postEvent(
+    this, new QPaintEvent( QRegion() ), Qt::LowEventPriority - 100
+  );
+
+  ++this->framesRenderedSinceLastReport;
+}
+
+void Game::printFpsReport() {
+  if ( ! this->lastFpsReport.isValid() ) {
+    this->lastFpsReport.start();
+    this->framesRenderedSinceLastReport = 0;
+  }
+
+  int msElapsed = this->lastFpsReport.elapsed();
+  if ( msElapsed >= MS_TO_REPORT_FPS ) {
+    float fps = this->framesRenderedSinceLastReport / (double) msElapsed;
+    fps *= 1000.0f;
+    qDebug( "FPS: %-6.2f", fps );
+
+    this->lastFpsReport.restart();
+    this->framesRenderedSinceLastReport = 0;
+  }
 }
 
 void Game::keyPressEvent( QKeyEvent* event ) {
@@ -104,6 +132,5 @@ void Game::keyPressEvent( QKeyEvent* event ) {
   else {
     event->ignore();
   }
-  this->updateGL();
 }
 
