@@ -17,3 +17,7 @@ double MovingObject::getVelocity() const {
   return this->velocity;
 }
 
+void MovingObject::setPosition( QPointF position ) {
+  this->position = position;
+}
+

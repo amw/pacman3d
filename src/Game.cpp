@@ -37,6 +37,8 @@ bool Game::initialize() {
     return false;
   }
 
+  this->hero.setPosition( this->board.getPlayer1Start() );
+
   return true;
 }
 

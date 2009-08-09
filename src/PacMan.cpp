@@ -1,5 +1,5 @@
 #include "PacMan.hpp"
-#include <math.h>
+#include <QDebug>
 
 
 struct XYZ {
@@ -30,12 +30,19 @@ void PacMan::initializeGL( QGLWidget & target ) {
   {
     glBindTexture( GL_TEXTURE_2D, this->pacmanTexture );
     glRotatef( 180, 1.0f, 0.0f, 0.0f );
-    gluSphere( this->sphereQuadric, 0.4f, 360 / 30, 180 / 5 );
+    gluSphere( this->sphereQuadric, 0.4f, 360 / 5, 180 / 5 );
   }
   glEndList();
 }
 
 void PacMan::render( QGLWidget & ) {
+  glPushMatrix();
+  glTranslatef(
+    this->position.x() + 0.5f,
+    this->position.y() + 0.5f,
+    0.5f
+  );
   glCallList( this->sphereList );
+  glPopMatrix();
 }
 

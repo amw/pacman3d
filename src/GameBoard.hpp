@@ -29,6 +29,7 @@ class GameBoard : public QObject {
     void render( QGLWidget & target );
     QPoint getSize();
     QPointF getRealSize();
+    QPointF getPlayer1Start();
 
   private:
     bool readBoardSize( QFile & map );

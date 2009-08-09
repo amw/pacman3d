@@ -13,8 +13,9 @@ class MovingObject : public QObject {
     const QPointF & getPosition() const;
     const QPointF & getDirection() const;
     double getVelocity() const;
+    void setPosition( QPointF position );
 
-  private:
+  protected:
     GameBoard * board;
     QPointF position;
     QPointF direction;
