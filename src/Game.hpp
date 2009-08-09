@@ -41,6 +41,7 @@ class Game : public QGLWidget {
     double aspectRatio;
     bool centerCamera;
     bool isometricCamera;
+    bool followingCamera;
 };
 
 #endif

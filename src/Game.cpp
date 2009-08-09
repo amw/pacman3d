@@ -69,7 +69,10 @@ void Game::resizeGL( int width, int height ) {
 
   this->aspectRatio = (double) width / (double) height;
 
-  this->refreshCamera();
+  glMatrixMode( GL_PROJECTION );
+  glLoadIdentity();
+
+  gluPerspective( FOVY, this->aspectRatio, 0.5f, 50.0f );
 }
 
 void Game::paintGL() {
@@ -80,9 +83,9 @@ void Game::paintGL() {
   glMatrixMode( GL_MODELVIEW );
   glLoadIdentity();
 
-  this->board.render( *this );
+  this->refreshCamera();
 
-  glTranslatef( 0.0f, 1.5f, 0.5f );
+  this->board.render( *this );
   this->hero.render( *this );
 
   glFinish();
@@ -112,13 +115,7 @@ void Game::printFpsReport() {
 }
 
 void Game::refreshCamera() {
-  glMatrixMode( GL_PROJECTION );
-  glLoadIdentity();
-
-  gluPerspective( FOVY, this->aspectRatio, 0.5f, 50.0f );
-
   if ( this->centerCamera ) {
-    qDebug() << "Setting center camera";
     QPointF boardSize = this->board.getRealSize();
     QPointF center( boardSize.x() / 2.0f, boardSize.y() / 2.0f );
 
@@ -127,13 +124,12 @@ void Game::refreshCamera() {
     cameraDistance += 2.0f;
 
     gluLookAt(
-      center.x(), center.y(), - cameraDistance,
+      center.x(), center.y(), cameraDistance,
       center.x(), center.y(), 0.0f,
-      0.0f,  1.0f,  0.0f
+      0.0f, 1.0f, 0.0f
     );
   }
   else if ( this->isometricCamera ) {
-    qDebug() << "Setting isometric camera";
     QPointF boardSize = this->board.getRealSize();
     QPointF center( boardSize.x() / 2.0f, boardSize.y() / 2.0f );
 
