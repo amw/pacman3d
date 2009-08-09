@@ -80,6 +80,8 @@ void Game::paintGL() {
   glTranslatef( 0.0f, 1.5f, 0.5f );
   this->hero.render( *this );
 
+  glFinish();
+
   qApp->postEvent(
     this, new QPaintEvent( QRegion() ), Qt::LowEventPriority - 100
   );
