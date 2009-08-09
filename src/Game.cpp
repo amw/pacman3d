@@ -37,7 +37,10 @@ bool Game::initialize() {
     return false;
   }
 
-  this->hero.setPosition( this->board.getPlayer1Start() );
+  QPointF heroPosition( this->board.getPlayer1Start() );
+  heroPosition.rx() += 0.5f;
+  heroPosition.ry() += 0.5f;
+  this->hero.setPosition( heroPosition );
 
   return true;
 }

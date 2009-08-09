@@ -38,8 +38,8 @@ void PacMan::initializeGL( QGLWidget & target ) {
 void PacMan::render( QGLWidget & ) {
   glPushMatrix();
   glTranslatef(
-    this->position.x() + 0.5f,
-    this->position.y() + 0.5f,
+    this->position.x(),
+    this->position.y(),
     0.5f
   );
   glCallList( this->sphereList );
