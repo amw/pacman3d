@@ -334,10 +334,10 @@ QPointF GameBoard::getRealSize() {
   return QPointF( this->width * BLOCK_WIDTH, this->height * BLOCK_WIDTH );
 }
 
-QPoint GameBoard::getPlayer1Start() {
-  return QPoint(
-    this->player1Start.x(),
-    this->player1Start.y()
+QPointF GameBoard::getPlayer1Start() {
+  return QPointF(
+    this->player1Start.x() * BLOCK_WIDTH + 0.5f,
+    this->player1Start.y() * BLOCK_WIDTH + 0.5f
   );
 }
 

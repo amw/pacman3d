@@ -37,10 +37,7 @@ bool Game::initialize() {
     return false;
   }
 
-  QPointF heroPosition( this->board.getPlayer1Start() );
-  heroPosition.rx() += 0.5f;
-  heroPosition.ry() += 0.5f;
-  this->hero.setPosition( heroPosition );
+  this->hero.setPosition( this->board.getPlayer1Start() );
 
   return true;
 }
@@ -135,12 +132,11 @@ void Game::refreshCamera() {
     );
   }
   else if ( this->isometricCamera ) {
-    QPointF boardSize = this->board.getRealSize();
-    QPointF center( boardSize.x() / 2.0f, boardSize.y() / 2.0f );
+    QPointF pacman( this->hero.getPosition() );
 
     gluLookAt(
-      center.x() + 10.0f, center.y() - 10.0f, 15.0f,
-      center.x(), center.y(), 0.0f,
+      pacman.x() + 7.0f, pacman.y() - 7.0f, 15.0f,
+      pacman.x(), pacman.y(), 0.0f,
       0.0f,  0.0f,  1.0f
     );
   }
