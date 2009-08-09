@@ -1,6 +1,11 @@
+#ifndef GAMEBOARD_HPP
+#define GAMEBOARD_HPP
+
 #include <QGLWidget>
 #include <QString>
 #include <QFile>
+#include <QPoint>
+#include <QPointF>
 
 #define BLOCK_WALL 'X'
 #define BLOCK_DOT '.'
@@ -13,7 +18,7 @@
 
 #define BLOCK_WIDTH 1.0f
 
-class GameBoard : QObject {
+class GameBoard : public QObject {
   Q_OBJECT
 
   public:
@@ -22,6 +27,8 @@ class GameBoard : QObject {
     bool initialize();
     void initializeGL( QGLWidget & target );
     void render( QGLWidget & target );
+    QPoint getSize();
+    QPointF getRealSize();
 
   private:
     bool readBoardSize( QFile & map );
@@ -36,8 +43,9 @@ class GameBoard : QObject {
     int height;
     int** blocks;
     bool allocatedBlocks;
-    double boardXOffset;
-    double boardYOffset;
+    QPoint player1Start;
+    QVector< QPoint > ghostStarts;
+
     GLuint wallsList;
     GLuint wallTexture;
     GLuint roofTexture;
@@ -48,4 +56,6 @@ class GameBoard : QObject {
       Wall, Dot, Path, Powerup, Teleport1, PlayerStart, GhostsStart, PlayerWall
     };
 };
+
+#endif
 

@@ -1,3 +1,6 @@
+#ifndef GAMEWINDOW_HPP
+#define GAMEWINDOW_HPP
+
 #include <QWidget>
 
 class Game;
@@ -17,4 +20,6 @@ class GameWindow : public QWidget {
     QHBoxLayout* layout;
     Game* game;
 };
+
+#endif
 

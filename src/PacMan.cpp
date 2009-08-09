@@ -8,7 +8,9 @@ struct XYZ {
   double z;
 };
 
-PacMan::PacMan() {
+PacMan::PacMan( GameBoard * board )
+  : MovingObject( board )
+{
 }
 
 PacMan::~PacMan() {
@@ -27,6 +29,7 @@ void PacMan::initializeGL( QGLWidget & target ) {
   glNewList( this->sphereList, GL_COMPILE );
   {
     glBindTexture( GL_TEXTURE_2D, this->pacmanTexture );
+    glRotatef( 180, 1.0f, 0.0f, 0.0f );
     gluSphere( this->sphereQuadric, 0.4f, 360 / 30, 180 / 5 );
   }
   glEndList();

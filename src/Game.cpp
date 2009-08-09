@@ -4,18 +4,20 @@
 #include <QPaintEvent>
 #include <QRegion>
 #include <QDebug>
+#include <math.h>
+
+#define DEG_TO_RADS 0.0174532925f
 
 Game::Game( QWidget* parent )
   : QGLWidget(
       QGLFormat( QGL::AlphaChannel | QGL::SampleBuffers ),
       parent
     ),
-    board( "original" )
+    board( "original" ),
+    hero( & this->board )
 {
   this->background = QColor::fromRgbF( 0.2, 0.2, 0.2 );
-  this->x = 0.0f;
-  this->y = 0.0f;
-  this->z = -30.f;
+  this->centerCamera = true;
 }
 
 Game::~Game() {
@@ -65,16 +67,9 @@ void Game::resizeGL( int width, int height ) {
   glMatrixMode( GL_MODELVIEW );
   glViewport( 0, 0, width, height );
 
-  glMatrixMode( GL_PROJECTION );
-  glLoadIdentity();
+  this->aspectRatio = (double) width / (double) height;
 
-  gluPerspective( 45, (double) width / (double) height, 0.5f, 35.0f );
-
-  gluLookAt(
-    5.0f, -5.0f, -25.0f,
-    0.0f,  0.0f, -28.0f,
-    0.0f,  0.0f,   1.0f
-  );
+  this->refreshCamera();
 }
 
 void Game::paintGL() {
@@ -85,7 +80,6 @@ void Game::paintGL() {
   glMatrixMode( GL_MODELVIEW );
   glLoadIdentity();
 
-  glTranslated( this->x, this->y, this->z );
   this->board.render( *this );
 
   glTranslatef( 0.0f, 1.5f, 0.5f );
@@ -117,30 +111,71 @@ void Game::printFpsReport() {
   }
 }
 
+void Game::refreshCamera() {
+  glMatrixMode( GL_PROJECTION );
+  glLoadIdentity();
+
+  gluPerspective( FOVY, this->aspectRatio, 0.5f, 50.0f );
+
+  if ( this->centerCamera ) {
+    qDebug() << "Setting center camera";
+    QPointF boardSize = this->board.getRealSize();
+    QPointF center( boardSize.x() / 2.0f, boardSize.y() / 2.0f );
+
+    double cameraDistance = boardSize.y() / 2.0f;
+    cameraDistance /= tanf( FOVY * DEG_TO_RADS / 2.0f );
+    cameraDistance += 2.0f;
+
+    gluLookAt(
+      center.x(), center.y(), - cameraDistance,
+      center.x(), center.y(), 0.0f,
+      0.0f,  1.0f,  0.0f
+    );
+  }
+  else if ( this->isometricCamera ) {
+    qDebug() << "Setting isometric camera";
+    QPointF boardSize = this->board.getRealSize();
+    QPointF center( boardSize.x() / 2.0f, boardSize.y() / 2.0f );
+
+    gluLookAt(
+      center.x() + 10.0f, center.y() - 10.0f, 15.0f,
+      center.x(), center.y(), 0.0f,
+      0.0f,  0.0f,  1.0f
+    );
+  }
+}
+
 void Game::keyPressEvent( QKeyEvent* event ) {
   if ( event->key() == Qt::Key_Left ) {
-    this->x -= 0.1f;
     event->accept();
   }
   else if ( event->key() == Qt::Key_Right ) {
-    this->x += 0.1f;
     event->accept();
   }
   else if ( event->key() == Qt::Key_Up ) {
-    this->y += 0.1f;
     event->accept();
   }
   else if ( event->key() == Qt::Key_Down ) {
-    this->y -= 0.1f;
     event->accept();
   }
   else if ( event->key() == Qt::Key_Equal ) {
-    this->z += 0.4f;
-    qDebug() << "Setting zoom to:" << this->z;
+    event->accept();
   }
   else if ( event->key() == Qt::Key_Minus ) {
-    this->z -= 0.4f;
-    qDebug() << "Setting zoom to:" << this->z;
+    event->accept();
+  }
+  else if ( event->key() == Qt::Key_C ) {
+    if ( this->centerCamera ) {
+      this->centerCamera = false;
+      this->isometricCamera = true;
+    }
+    else {
+      this->centerCamera = true;
+      this->isometricCamera = false;
+    }
+    this->refreshCamera();
+
+    event->accept();
   }
   else {
     event->ignore();

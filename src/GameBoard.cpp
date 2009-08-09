@@ -80,9 +80,6 @@ bool GameBoard::readBoardSize( QFile & map ) {
   this->width += 2;
   this->height += 2;
 
-  this->boardXOffset = - ( this->width * BLOCK_WIDTH ) / 2.0f;
-  this->boardYOffset = - ( this->height * BLOCK_WIDTH ) / 2.0f;
-
   return true;
 }
 
@@ -114,7 +111,6 @@ bool GameBoard::readBoardBlocks( QFile & map ) {
   this->initBlocksToWalls();
 
   bool foundPlayerStart = false;
-  bool foundGhostsStart = false;
 
   QTextStream in( &map );
   QString line = in.readLine();
@@ -146,11 +142,12 @@ bool GameBoard::readBoardBlocks( QFile & map ) {
             return false;
           }
           foundPlayerStart = true;
+          this->player1Start = QPoint( x, y );
           element = GameBoard::PlayerStart;
           break;
         case BLOCK_GHOSTS_START:
-          foundGhostsStart = true;
           element = GameBoard::GhostsStart;
+          this->ghostStarts.append( QPoint( x, y ) );
           break;
         case BLOCK_PLAYER_WALL:
           element = GameBoard::PlayerWall;
@@ -167,7 +164,7 @@ bool GameBoard::readBoardBlocks( QFile & map ) {
     --y;
   }
 
-  if ( ! foundPlayerStart || ! foundGhostsStart ) {
+  if ( ! foundPlayerStart || ! this->ghostStarts.size() ) {
     qDebug() << "Missing player's or ghosts' start positions.";
     return false;
   }
@@ -223,14 +220,14 @@ void GameBoard::initializeGL( QGLWidget & target ) {
 }
 
 void GameBoard::addWallBlock( int x, int y ) {
-  double x1 = this->boardXOffset + BLOCK_WIDTH * x;
+  double x1 = BLOCK_WIDTH * x;
   double x2 = x1 + BLOCK_WIDTH;
 
-  double y1 = this->boardYOffset + BLOCK_WIDTH * y;
+  double y1 = BLOCK_WIDTH * y;
   double y2 = y1 + BLOCK_WIDTH;
 
   double z1 = - BLOCK_WIDTH;
-  double z2 = z1 + 2 * BLOCK_WIDTH;
+  double z2 = + BLOCK_WIDTH;
 
   double s1 = (double) x         / (double) this->width  * 4.0f;
   double s2 = (double) ( x + 1 ) / (double) this->width  * 4.0f;
@@ -279,10 +276,10 @@ void GameBoard::addWallBlock( int x, int y ) {
 }
 
 void GameBoard::addFloorBlock( int x, int y, GLuint texture ) {
-  double x1 = this->boardXOffset + BLOCK_WIDTH * x;
+  double x1 = BLOCK_WIDTH * x;
   double x2 = x1 + BLOCK_WIDTH;
 
-  double y1 = this->boardYOffset + BLOCK_WIDTH * y;
+  double y1 = BLOCK_WIDTH * y;
   double y2 = y1 + BLOCK_WIDTH;
 
   double z1 = - BLOCK_WIDTH;
@@ -327,5 +324,13 @@ void GameBoard::addFloorBlock( int x, int y, GLuint texture ) {
 
 void GameBoard::render( QGLWidget & ) {
   glCallList( this->wallsList );
+}
+
+QPoint GameBoard::getSize() {
+  return QPoint( this->width, this->height );
+}
+
+QPointF GameBoard::getRealSize() {
+  return QPointF( this->width * BLOCK_WIDTH, this->height * BLOCK_WIDTH );
 }
 

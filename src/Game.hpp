@@ -1,8 +1,12 @@
+#ifndef GAME_HPP
+#define GAME_HPP
+
 #include "GameBoard.hpp"
 #include "PacMan.hpp"
 #include <QGLWidget>
 #include <QTime>
 
+#define FOVY 45.0f
 #define MS_TO_REPORT_FPS 1000
 
 class QKeyEvent;
@@ -26,6 +30,7 @@ class Game : public QGLWidget {
 
   private:
     void printFpsReport();
+    void refreshCamera();
 
   private:
     QTime lastFpsReport;
@@ -33,6 +38,10 @@ class Game : public QGLWidget {
     GameBoard board;
     PacMan hero;
     QColor background;
-    double x, y, z;
+    double aspectRatio;
+    bool centerCamera;
+    bool isometricCamera;
 };
+
+#endif
 

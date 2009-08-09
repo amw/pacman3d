@@ -1,10 +1,15 @@
+#ifndef PACMAN_HPP
+#define PACMAN_HPP
+
+#include "GameBoard.hpp"
+#include "MovingObject.hpp"
 #include <QGLWidget>
 
-class PacMan : public QObject {
+class PacMan : public MovingObject {
   Q_OBJECT
 
   public:
-    PacMan();
+    PacMan( GameBoard * board );
     ~PacMan();
     void initializeGL( QGLWidget & target );
     void render( QGLWidget & target );
@@ -18,4 +23,6 @@ class PacMan : public QObject {
     GLuint sphereList;
     GLuint pacmanTexture;
 };
+
+#endif
 
