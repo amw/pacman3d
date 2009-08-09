@@ -38,6 +38,8 @@ bool Game::initialize() {
   }
 
   this->hero.setPosition( this->board.getPlayer1Start() );
+  this->hero.setDirection( QPointF( -1.0f, 0.0f ) );
+  this->hero.setVelocity( 1.0f );
 
   return true;
 }
@@ -79,6 +81,8 @@ void Game::resizeGL( int width, int height ) {
 
 void Game::paintGL() {
   this->printFpsReport();
+
+  this->hero.updatePosition();
 
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
@@ -137,7 +141,7 @@ void Game::refreshCamera() {
     gluLookAt(
       pacman.x() + 7.0f, pacman.y() - 7.0f, 15.0f,
       pacman.x(), pacman.y(), 0.0f,
-      0.0f,  0.0f,  1.0f
+      0.0f, 0.0f, 1.0f
     );
   }
 }
