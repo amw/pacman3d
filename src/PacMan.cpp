@@ -50,12 +50,17 @@ bool PacMan::canAccess( int x, int y ) {
 }
 
 void PacMan::setDesiredDirection( QPoint direction ) {
-  QPoint sum = this->direction + direction;
-  if ( sum.isNull() ) {
-    this->setDirection( direction );
+  if ( this->direction == direction ) {
+    this->desiredDirection = QPoint();
+    return;
   }
-
-  this->desiredDirection = direction;
+  else if ( - this->direction == direction ) {
+    this->setDirection( direction );
+    this->desiredDirection = QPoint();
+  }
+  else {
+    this->desiredDirection = direction;
+  }
 }
 
 bool PacMan::atBlockCenter() {
@@ -69,6 +74,7 @@ bool PacMan::atBlockCenter() {
     this->position.setY( this->alignToCenter( this->position.y() ) );
 
     this->direction = this->desiredDirection;
+    this->desiredDirection = QPoint();
 
     return true;
   }
