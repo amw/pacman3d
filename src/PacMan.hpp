@@ -14,6 +14,9 @@ class PacMan : public MovingObject {
     void initializeGL( QGLWidget & target );
     void render( QGLWidget & target );
 
+  protected:
+    virtual bool canAccess( int x, int y );
+
   private:
     void addSphere( int dTheta, int dPhi );
     void addSphereVertex( int theta, int phi );

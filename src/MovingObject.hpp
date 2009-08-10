@@ -22,6 +22,12 @@ class MovingObject : public QObject {
     void updatePosition();
 
   protected:
+    virtual bool canAccess( int x, int y ) = 0;
+
+  private:
+    bool testMovement( double posX, double posY );
+
+  protected:
     GameBoard * board;
     QTime lastPositionUpdate;
     QPointF position;

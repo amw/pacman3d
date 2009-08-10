@@ -1,4 +1,5 @@
 #include "MovingObject.hpp"
+#include <math.h>
 
 
 MovingObject::MovingObject( GameBoard * board )
@@ -35,6 +36,18 @@ void MovingObject::setVelocity( double velocity ) {
   this->velocity = velocity;
 }
 
+bool MovingObject::testMovement( double posX, double posY ) {
+  posX += this->direction.x() * 0.5f;
+  posY += this->direction.y() * 0.5f;
+
+  if ( ! this->canAccess( posX, posY ) ) {
+    return false;
+  }
+  else {
+    return true;
+  }
+}
+
 void MovingObject::updatePosition() {
   int msElapsed = this->lastPositionUpdate.restart();
 
@@ -42,9 +55,21 @@ void MovingObject::updatePosition() {
     return;
   }
 
-  double moveFactor = msElapsed / 1000.0f;
+  double timeFactor = msElapsed / 1000.0f;
 
-  this->position.rx() += this->direction.x() * this->velocity * moveFactor;
-  this->position.ry() += this->direction.y() * this->velocity * moveFactor;
+  double newX = this->position.x();
+  double newY = this->position.y();
+
+  newX += this->direction.x() * this->velocity * timeFactor;
+  newY += this->direction.y() * this->velocity * timeFactor;
+
+  if ( ! this->testMovement( newX, newY ) ) {
+    // if you can't move, center at current block
+    newX = round( this->position.x() * 2.0f ) / 2.0f;
+    newY = round( this->position.y() * 2.0f ) / 2.0f;
+  }
+
+  this->position.setX( newX );
+  this->position.setY( newY );
 }
 

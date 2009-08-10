@@ -341,3 +341,26 @@ QPointF GameBoard::getPlayer1Start() {
   );
 }
 
+bool GameBoard::isAccessibleByGhost( int x, int y ) {
+  if (
+    this->blocks[ y ][ x ] != GameBoard::Wall
+  ) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+bool GameBoard::isAccessibleByPlayer( int x, int y ) {
+  if (
+    this->blocks[ y ][ x ] != GameBoard::Wall &&
+    this->blocks[ y ][ x ] != GameBoard::PlayerWall
+  ) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+

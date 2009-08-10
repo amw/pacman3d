@@ -46,3 +46,7 @@ void PacMan::render( QGLWidget & ) {
   glPopMatrix();
 }
 
+bool PacMan::canAccess( int x, int y ) {
+  return this->board->isAccessibleByPlayer( x, y );
+}
+

@@ -30,6 +30,8 @@ class GameBoard : public QObject {
     QPoint getSize();
     QPointF getRealSize();
     QPointF getPlayer1Start();
+    bool isAccessibleByPlayer( int x, int y );
+    bool isAccessibleByGhost( int x, int y );
 
   private:
     bool readBoardSize( QFile & map );
