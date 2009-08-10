@@ -21,6 +21,7 @@ double MovingObject::getVelocity() const {
 }
 
 void MovingObject::setPosition( QPointF position ) {
+  this->lastPositionUpdate.restart();
   this->position = position;
 }
 
