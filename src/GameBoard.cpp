@@ -191,22 +191,22 @@ void GameBoard::initializeGL( QGLWidget & target ) {
           this->addWallBlock( x, y );
         }
         else if ( GameBoard::Path == this->blocks[ y ][ x ] ) {
-          this->addFloorBlock( x, y, this->grassTexture );
+          this->addEmptyBlock( x, y );
         }
         else if ( GameBoard::Dot == this->blocks[ y ][ x ] ) {
-          this->addFloorBlock( x, y, this->grassTexture );
+          this->addEmptyBlock( x, y );
         }
         else if ( GameBoard::Powerup == this->blocks[ y ][ x ] ) {
-          this->addFloorBlock( x, y, this->grassTexture );
+          this->addEmptyBlock( x, y );
         }
         else if ( GameBoard::Teleport1 == this->blocks[ y ][ x ] ) {
-          this->addFloorBlock( x, y, this->grassTexture );
+          this->addEmptyBlock( x, y );
+        }
+        else if ( GameBoard::PlayerStart == this->blocks[ y ][ x ] ) {
+          this->addEmptyBlock( x, y );
         }
         else if ( GameBoard::PlayerWall == this->blocks[ y ][ x ] ) {
           this->addFloorBlock( x, y, this->roofTexture );
-        }
-        else if ( GameBoard::PlayerStart == this->blocks[ y ][ x ] ) {
-          this->addFloorBlock( x, y, this->grassTexture );
         }
         else if ( GameBoard::GhostsStart == this->blocks[ y ][ x ] ) {
           this->addFloorBlock(
@@ -226,7 +226,7 @@ void GameBoard::addWallBlock( int x, int y ) {
   double y1 = BLOCK_WIDTH * y;
   double y2 = y1 + BLOCK_WIDTH;
 
-  double z1 = - BLOCK_WIDTH;
+  double z1 = - BLOCK_WIDTH * 0.2;
   double z2 = + BLOCK_WIDTH;
 
   double s1 = (double) x         / (double) this->width  * 4.0f;
@@ -247,30 +247,50 @@ void GameBoard::addWallBlock( int x, int y ) {
   glBindTexture( GL_TEXTURE_2D, this->wallTexture );
   glBegin( GL_QUADS );
   {
-    glTexCoord2f( 1.0f, 0.0f ); glVertex3d( x1, y1, z1 );
-    glTexCoord2f( 1.0f, 1.0f ); glVertex3d( x1, y2, z1 );
-    glTexCoord2f( 0.0f, 1.0f ); glVertex3d( x2, y2, z1 );
-    glTexCoord2f( 0.0f, 0.0f ); glVertex3d( x2, y1, z1 );
+    glTexCoord2f( 1.0f, 0.0f ); glVertex3d( x1, y2, z1 );
+    glTexCoord2f( 1.0f, 1.2f ); glVertex3d( x1, y2, z2 );
+    glTexCoord2f( 0.0f, 1.2f ); glVertex3d( x2, y2, z2 );
+    glTexCoord2f( 0.0f, 0.0f ); glVertex3d( x2, y2, z1 );
 
-    glTexCoord2f( 0.0f, 1.0f ); glVertex3d( x1, y2, z1 );
-    glTexCoord2f( 0.0f, 0.0f ); glVertex3d( x1, y2, z2 );
-    glTexCoord2f( 1.0f, 0.0f ); glVertex3d( x2, y2, z2 );
-    glTexCoord2f( 1.0f, 1.0f ); glVertex3d( x2, y2, z1 );
-
-    glTexCoord2f( 1.0f, 1.0f ); glVertex3d( x1, y1, z1 );
-    glTexCoord2f( 0.0f, 1.0f ); glVertex3d( x2, y1, z1 );
-    glTexCoord2f( 0.0f, 0.0f ); glVertex3d( x2, y1, z2 );
-    glTexCoord2f( 1.0f, 0.0f ); glVertex3d( x1, y1, z2 );
+    glTexCoord2f( 0.0f, 0.0f ); glVertex3d( x1, y1, z1 );
+    glTexCoord2f( 1.0f, 0.0f ); glVertex3d( x2, y1, z1 );
+    glTexCoord2f( 1.0f, 1.2f ); glVertex3d( x2, y1, z2 );
+    glTexCoord2f( 0.0f, 1.2f ); glVertex3d( x1, y1, z2 );
 
     glTexCoord2f( 0.0f, 0.0f ); glVertex3d( x2, y1, z1 );
     glTexCoord2f( 1.0f, 0.0f ); glVertex3d( x2, y2, z1 );
-    glTexCoord2f( 1.0f, 1.0f ); glVertex3d( x2, y2, z2 );
-    glTexCoord2f( 0.0f, 1.0f ); glVertex3d( x2, y1, z2 );
+    glTexCoord2f( 1.0f, 1.2f ); glVertex3d( x2, y2, z2 );
+    glTexCoord2f( 0.0f, 1.2f ); glVertex3d( x2, y1, z2 );
 
     glTexCoord2f( 1.0f, 0.0f ); glVertex3d( x1, y1, z1 );
-    glTexCoord2f( 1.0f, 1.0f ); glVertex3d( x1, y1, z2 );
-    glTexCoord2f( 0.0f, 1.0f ); glVertex3d( x1, y2, z2 );
+    glTexCoord2f( 1.0f, 1.2f ); glVertex3d( x1, y1, z2 );
+    glTexCoord2f( 0.0f, 1.2f ); glVertex3d( x1, y2, z2 );
     glTexCoord2f( 0.0f, 0.0f ); glVertex3d( x1, y2, z1 );
+  }
+  glEnd();
+}
+
+void GameBoard::addEmptyBlock( int x, int y ) {
+  double x1 = BLOCK_WIDTH * x;
+  double x2 = x1 + BLOCK_WIDTH;
+
+  double y1 = BLOCK_WIDTH * y;
+  double y2 = y1 + BLOCK_WIDTH;
+
+  double z2 = 0.0f;
+
+  double s1 = (double) x         / (double) this->width  * 4.0f;
+  double s2 = (double) ( x + 1 ) / (double) this->width  * 4.0f;
+  double t1 = (double) y         / (double) this->height * 4.0f;
+  double t2 = (double) ( y + 1 ) / (double) this->height * 4.0f;
+
+  glBindTexture( GL_TEXTURE_2D, this->grassTexture );
+  glBegin( GL_QUADS );
+  {
+    glTexCoord2f( s1, t1 ); glVertex3d( x1, y1, z2 );
+    glTexCoord2f( s2, t1 ); glVertex3d( x2, y1, z2 );
+    glTexCoord2f( s2, t2 ); glVertex3d( x2, y2, z2 );
+    glTexCoord2f( s1, t2 ); glVertex3d( x1, y2, z2 );
   }
   glEnd();
 }
@@ -282,7 +302,6 @@ void GameBoard::addFloorBlock( int x, int y, GLuint texture ) {
   double y1 = BLOCK_WIDTH * y;
   double y2 = y1 + BLOCK_WIDTH;
 
-  double z1 = - BLOCK_WIDTH;
   double z2 = 0.0f;
 
   glBindTexture( GL_TEXTURE_2D, texture );
@@ -292,35 +311,9 @@ void GameBoard::addFloorBlock( int x, int y, GLuint texture ) {
     glTexCoord2f( 1.0f, 0.0f ); glVertex3d( x2, y1, z2 );
     glTexCoord2f( 1.0f, 1.0f ); glVertex3d( x2, y2, z2 );
     glTexCoord2f( 0.0f, 1.0f ); glVertex3d( x1, y2, z2 );
-
-    glTexCoord2f( 1.0f, 0.0f ); glVertex3d( x1, y1, z1 );
-    glTexCoord2f( 1.0f, 1.0f ); glVertex3d( x1, y2, z1 );
-    glTexCoord2f( 0.0f, 1.0f ); glVertex3d( x2, y2, z1 );
-    glTexCoord2f( 0.0f, 0.0f ); glVertex3d( x2, y1, z1 );
-
-    glTexCoord2f( 0.0f, 1.0f ); glVertex3d( x1, y2, z1 );
-    glTexCoord2f( 0.0f, 0.0f ); glVertex3d( x1, y2, z2 );
-    glTexCoord2f( 1.0f, 0.0f ); glVertex3d( x2, y2, z2 );
-    glTexCoord2f( 1.0f, 1.0f ); glVertex3d( x2, y2, z1 );
-
-    glTexCoord2f( 1.0f, 1.0f ); glVertex3d( x1, y1, z1 );
-    glTexCoord2f( 0.0f, 1.0f ); glVertex3d( x2, y1, z1 );
-    glTexCoord2f( 0.0f, 0.0f ); glVertex3d( x2, y1, z2 );
-    glTexCoord2f( 1.0f, 0.0f ); glVertex3d( x1, y1, z2 );
-
-    glTexCoord2f( 1.0f, 0.0f ); glVertex3d( x2, y1, z1 );
-    glTexCoord2f( 1.0f, 1.0f ); glVertex3d( x2, y2, z1 );
-    glTexCoord2f( 0.0f, 1.0f ); glVertex3d( x2, y2, z2 );
-    glTexCoord2f( 0.0f, 0.0f ); glVertex3d( x2, y1, z2 );
-
-    glTexCoord2f( 0.0f, 0.0f ); glVertex3d( x1, y1, z1 );
-    glTexCoord2f( 1.0f, 0.0f ); glVertex3d( x1, y1, z2 );
-    glTexCoord2f( 1.0f, 1.0f ); glVertex3d( x1, y2, z2 );
-    glTexCoord2f( 0.0f, 1.0f ); glVertex3d( x1, y2, z1 );
   }
   glEnd();
 }
-
 
 void GameBoard::render( QGLWidget & ) {
   glCallList( this->wallsList );
