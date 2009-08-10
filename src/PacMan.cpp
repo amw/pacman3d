@@ -1,5 +1,4 @@
 #include "PacMan.hpp"
-#include <QDebug>
 
 
 struct XYZ {
@@ -53,7 +52,6 @@ bool PacMan::canAccess( int x, int y ) {
 void PacMan::setDesiredDirection( QPointF direction ) {
   QPointF sum = this->direction + direction;
   if ( sum.toPoint().isNull() ) {
-    qDebug() << "changing now";
     this->setDirection( direction );
   }
 

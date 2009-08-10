@@ -138,7 +138,7 @@ void Game::refreshCamera() {
     QPointF pacman( this->hero.getPosition() );
 
     gluLookAt(
-      pacman.x() + 7.0f, pacman.y() - 7.0f, 15.0f,
+      pacman.x() + 4.0f, pacman.y() - 8.0f, 15.0f,
       pacman.x(), pacman.y(), 0.0f,
       0.0f, 0.0f, 1.0f
     );
