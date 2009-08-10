@@ -26,7 +26,7 @@ class MovingObject : public QObject {
   protected:
     double alignToCenter( double position );
     virtual bool canAccess( int x, int y ) = 0;
-    virtual bool atBlockCenter() = 0;
+    virtual void atBlockCenter() = 0;
 
   private:
     bool testMovement( double posX, double posY );
@@ -38,9 +38,6 @@ class MovingObject : public QObject {
     QPointF position;
     QPoint direction;
     double velocity;
-
-  private:
-    QPoint lastCenter;
 };
 
 #endif

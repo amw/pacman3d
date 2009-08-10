@@ -17,7 +17,7 @@ class PacMan : public MovingObject {
 
   protected:
     virtual bool canAccess( int x, int y );
-    virtual bool atBlockCenter();
+    virtual void atBlockCenter();
 
   private:
     void addSphere( int dTheta, int dPhi );

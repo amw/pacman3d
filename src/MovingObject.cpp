@@ -75,8 +75,6 @@ void MovingObject::updatePosition() {
   this->testIfAtBlockCenter();
 }
 
-#include<QDebug>
-
 double MovingObject::alignToCenter( double position ) {
   double newPos = round( position * 2.0f );
   bool atCenter = (int) newPos % 2;
@@ -101,11 +99,7 @@ void MovingObject::testIfAtBlockCenter() {
 
   if ( CENTER_ATTRACTION > atXCenter && CENTER_ATTRACTION > atYCenter ) {
     QPoint currentBlock( this->position.x(), this->position.y() );
-    if ( currentBlock != this->lastCenter ) {
-      if ( this->atBlockCenter() ) {
-        this->lastCenter = currentBlock;
-      }
-    }
+    this->atBlockCenter();
   }
 }
 

@@ -63,9 +63,9 @@ void PacMan::setDesiredDirection( QPoint direction ) {
   }
 }
 
-bool PacMan::atBlockCenter() {
+void PacMan::atBlockCenter() {
   if ( this->desiredDirection.isNull() ) {
-    return false;
+    return;
   }
 
   QPointF testPosition = this->position + this->desiredDirection;
@@ -75,10 +75,6 @@ bool PacMan::atBlockCenter() {
 
     this->direction = this->desiredDirection;
     this->desiredDirection = QPoint();
-
-    return true;
   }
-
-  return false;
 }
 
