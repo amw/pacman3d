@@ -42,6 +42,7 @@ class Game : public QGLWidget {
     bool centerCamera;
     bool isometricCamera;
     bool followingCamera;
+    double cameraZoom;
 };
 
 #endif

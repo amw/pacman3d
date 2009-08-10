@@ -14,7 +14,8 @@ Game::Game( QWidget* parent )
       parent
     ),
     board( "original" ),
-    hero( & this->board )
+    hero( & this->board ),
+    cameraZoom( 1.0f )
 {
   this->background = QColor::fromRgbF( 0.2, 0.2, 0.2 );
   this->centerCamera = true;
@@ -138,7 +139,9 @@ void Game::refreshCamera() {
     QPointF pacman( this->hero.getPosition() );
 
     gluLookAt(
-      pacman.x() + 4.0f, pacman.y() - 8.0f, 15.0f,
+      pacman.x() + 4.0f * this->cameraZoom,
+      pacman.y() - 8.0f * this->cameraZoom,
+      15.0f * this->cameraZoom,
       pacman.x(), pacman.y(), 0.0f,
       0.0f, 0.0f, 1.0f
     );
@@ -162,14 +165,27 @@ void Game::keyPressEvent( QKeyEvent* event ) {
     this->hero.setDesiredDirection( QPointF( 0.0f, -1.0f ) );
     event->accept();
   }
+  else if ( event->key() == Qt::Key_0 ) {
+    this->cameraZoom = 1.0f;
+    event->accept();
+  }
   else if ( event->key() == Qt::Key_Equal ) {
+    this->cameraZoom -= 0.025f;
+    if ( this->cameraZoom < 0.4f ) {
+      this->cameraZoom = 0.4f;
+    }
     event->accept();
   }
   else if ( event->key() == Qt::Key_Minus ) {
+    this->cameraZoom += 0.025f;
+    if ( this->cameraZoom > 1.5f ) {
+      this->cameraZoom = 1.5f;
+    }
     event->accept();
   }
   else if ( event->key() == Qt::Key_C ) {
     if ( this->centerCamera ) {
+      this->cameraZoom = 1.0f;
       this->centerCamera = false;
       this->isometricCamera = true;
     }
