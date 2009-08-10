@@ -150,19 +150,19 @@ void Game::refreshCamera() {
 
 void Game::keyPressEvent( QKeyEvent* event ) {
   if ( event->key() == Qt::Key_Left ) {
-    this->hero.setDesiredDirection( QPointF( -1.0f, 0.0f ) );
+    this->hero.setDesiredDirection( QPoint( -1, 0 ) );
     event->accept();
   }
   else if ( event->key() == Qt::Key_Right ) {
-    this->hero.setDesiredDirection( QPointF( 1.0f, 0.0f ) );
+    this->hero.setDesiredDirection( QPoint( 1, 0 ) );
     event->accept();
   }
   else if ( event->key() == Qt::Key_Up ) {
-    this->hero.setDesiredDirection( QPointF( 0.0f, 1.0f ) );
+    this->hero.setDesiredDirection( QPoint( 0, 1 ) );
     event->accept();
   }
   else if ( event->key() == Qt::Key_Down ) {
-    this->hero.setDesiredDirection( QPointF( 0.0f, -1.0f ) );
+    this->hero.setDesiredDirection( QPoint( 0, -1 ) );
     event->accept();
   }
   else if ( event->key() == Qt::Key_0 ) {

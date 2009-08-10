@@ -13,7 +13,7 @@ class PacMan : public MovingObject {
     ~PacMan();
     void initializeGL( QGLWidget & target );
     void render( QGLWidget & target );
-    void setDesiredDirection( QPointF direction );
+    void setDesiredDirection( QPoint direction );
 
   protected:
     virtual bool canAccess( int x, int y );
@@ -24,7 +24,7 @@ class PacMan : public MovingObject {
     void addSphereVertex( int theta, int phi );
 
   private:
-    QPointF desiredDirection;
+    QPoint desiredDirection;
     GLUquadric* sphereQuadric;
     GLuint sphereList;
     GLuint pacmanTexture;

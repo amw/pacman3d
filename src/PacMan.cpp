@@ -49,9 +49,9 @@ bool PacMan::canAccess( int x, int y ) {
   return this->board->isAccessibleByPlayer( x, y );
 }
 
-void PacMan::setDesiredDirection( QPointF direction ) {
-  QPointF sum = this->direction + direction;
-  if ( sum.toPoint().isNull() ) {
+void PacMan::setDesiredDirection( QPoint direction ) {
+  QPoint sum = this->direction + direction;
+  if ( sum.isNull() ) {
     this->setDirection( direction );
   }
 
@@ -63,8 +63,8 @@ bool PacMan::atBlockCenter() {
     return false;
   }
 
-  QPointF testDirection = this->position + this->desiredDirection;
-  if ( this->canAccess( testDirection.x(), testDirection.y() ) ) {
+  QPointF testPosition = this->position + this->desiredDirection;
+  if ( this->canAccess( testPosition.x(), testPosition.y() ) ) {
     this->position.setX( this->alignToCenter( this->position.x() ) );
     this->position.setY( this->alignToCenter( this->position.y() ) );
 

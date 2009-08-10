@@ -16,9 +16,9 @@ class MovingObject : public QObject {
   public:
     MovingObject( GameBoard * board );
     const QPointF & getPosition() const;
-    const QPointF & getDirection() const;
+    const QPoint & getDirection() const;
     double getVelocity() const;
-    void setDirection( QPointF direction );
+    void setDirection( QPoint direction );
     void setPosition( QPointF position );
     void setVelocity( double velocity );
     void updatePosition();
@@ -36,7 +36,7 @@ class MovingObject : public QObject {
     GameBoard * board;
     QTime lastPositionUpdate;
     QPointF position;
-    QPointF direction;
+    QPoint direction;
     double velocity;
 
   private:

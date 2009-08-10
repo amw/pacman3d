@@ -13,7 +13,7 @@ const QPointF & MovingObject::getPosition() const {
   return this->position;
 }
 
-const QPointF & MovingObject::getDirection() const {
+const QPoint & MovingObject::getDirection() const {
   return this->direction;
 }
 
@@ -26,7 +26,7 @@ void MovingObject::setPosition( QPointF position ) {
   this->position = position;
 }
 
-void MovingObject::setDirection( QPointF direction ) {
+void MovingObject::setDirection( QPoint direction ) {
   this->updatePosition();
   this->direction = direction;
 }
