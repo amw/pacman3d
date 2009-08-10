@@ -65,11 +65,47 @@ void MovingObject::updatePosition() {
 
   if ( ! this->testMovement( newX, newY ) ) {
     // if you can't move, center at current block
-    newX = round( this->position.x() * 2.0f ) / 2.0f;
-    newY = round( this->position.y() * 2.0f ) / 2.0f;
+    newX = this->alignToCenter( this->position.x() );
+    newY = this->alignToCenter( this->position.y() );
   }
 
   this->position.setX( newX );
   this->position.setY( newY );
+
+  this->testIfAtBlockCenter();
+}
+
+#include<QDebug>
+
+double MovingObject::alignToCenter( double position ) {
+  double newPos = round( position * 2.0f );
+  bool atCenter = (int) newPos % 2;
+  newPos /= 2.0f;
+  if ( ! atCenter ) {
+    if ( newPos > position ) {
+      newPos -= 0.5f;
+    }
+    else {
+      newPos += 0.5f;
+    }
+  }
+  return newPos;
+}
+
+void MovingObject::testIfAtBlockCenter() {
+  double atXCenter = this->position.x() - (int) this->position.x();
+  double atYCenter = this->position.y() - (int) this->position.y();
+
+  atXCenter = fabs( atXCenter - 0.5f );
+  atYCenter = fabs( atYCenter - 0.5f );
+
+  if ( CENTER_ATTRACTION > atXCenter && CENTER_ATTRACTION > atYCenter ) {
+    QPoint currentBlock( this->position.x(), this->position.y() );
+    if ( currentBlock != this->lastCenter ) {
+      if ( this->atBlockCenter() ) {
+        this->lastCenter = currentBlock;
+      }
+    }
+  }
 }
 

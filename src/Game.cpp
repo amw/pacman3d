@@ -38,8 +38,7 @@ bool Game::initialize() {
   }
 
   this->hero.setPosition( this->board.getPlayer1Start() );
-  this->hero.setDirection( QPointF( -1.0f, 0.0f ) );
-  this->hero.setVelocity( 1.0f );
+  this->hero.setVelocity( 3.0f );
 
   return true;
 }
@@ -148,15 +147,19 @@ void Game::refreshCamera() {
 
 void Game::keyPressEvent( QKeyEvent* event ) {
   if ( event->key() == Qt::Key_Left ) {
+    this->hero.setDesiredDirection( QPointF( -1.0f, 0.0f ) );
     event->accept();
   }
   else if ( event->key() == Qt::Key_Right ) {
+    this->hero.setDesiredDirection( QPointF( 1.0f, 0.0f ) );
     event->accept();
   }
   else if ( event->key() == Qt::Key_Up ) {
+    this->hero.setDesiredDirection( QPointF( 0.0f, 1.0f ) );
     event->accept();
   }
   else if ( event->key() == Qt::Key_Down ) {
+    this->hero.setDesiredDirection( QPointF( 0.0f, -1.0f ) );
     event->accept();
   }
   else if ( event->key() == Qt::Key_Equal ) {

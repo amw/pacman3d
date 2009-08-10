@@ -3,10 +3,12 @@
 
 #include "GameBoard.hpp"
 #include <QPointF>
+#include <QPoint>
 #include <QObject>
 #include <QTime>
 
 #define MINIMUM_VELOCITY 0.05f
+#define CENTER_ATTRACTION 0.15f
 
 class MovingObject : public QObject {
   Q_OBJECT
@@ -22,10 +24,13 @@ class MovingObject : public QObject {
     void updatePosition();
 
   protected:
+    double alignToCenter( double position );
     virtual bool canAccess( int x, int y ) = 0;
+    virtual bool atBlockCenter() = 0;
 
   private:
     bool testMovement( double posX, double posY );
+    void testIfAtBlockCenter();
 
   protected:
     GameBoard * board;
@@ -33,6 +38,9 @@ class MovingObject : public QObject {
     QPointF position;
     QPointF direction;
     double velocity;
+
+  private:
+    QPoint lastCenter;
 };
 
 #endif
