@@ -82,7 +82,7 @@ void Game::resizeGL( int width, int height ) {
 
   gluPerspective( FOVY, this->aspectRatio, 0.5f, 50.0f );
 
-  glClear( GL_ACCUM_BUFFER_BIT );
+  this->needsRepaint = true;
 }
 
 void Game::paintGL() {
@@ -92,6 +92,11 @@ void Game::paintGL() {
     this->lastFrame.start();
   }
 
+  if ( this->needsRepaint ) {
+    glClear( GL_ACCUM_BUFFER_BIT );
+    this->paintFrame( this->lastFrame.restart() );
+    this->needsRepaint = false;
+  }
   if ( this->motionBlurFrames ) {
     this->paintWithMotionBlur( this->lastFrame.restart() );
   }

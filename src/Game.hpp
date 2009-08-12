@@ -40,6 +40,7 @@ class Game : public QGLWidget {
     PacMan hero;
 
     QTimer timer;
+    bool needsRepaint;
 
     int motionBlurFrames;
     QTime lastFrame;
