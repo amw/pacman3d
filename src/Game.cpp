@@ -77,6 +77,8 @@ void Game::initializeGL() {
   );
   this->shaderProgram->link();
   this->shaderProgram->enable( true );
+  int ambientLight = this->shaderProgram->getUniformLocation( "ambientLight" );
+  glUniform4f( ambientLight, 0.9f, 0.2f, 0.2f, 1.0f );
 }
 
 void Game::resizeGL( int width, int height ) {

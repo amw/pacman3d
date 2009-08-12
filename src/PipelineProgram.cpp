@@ -12,6 +12,7 @@ PipelineProgram::~PipelineProgram() {
   QVector< GLuint >::iterator i;
 
   for ( i = this->shaders.begin(); i != this->shaders.end(); ++i ) {
+    glDetachShader( this->id, *i );
     glDeleteShader( *i );
   }
 
@@ -50,7 +51,10 @@ bool PipelineProgram::attachShader( GLenum type, QString filename ) {
   glGetShaderiv( shader, GL_COMPILE_STATUS, & compileStatus );
 
   if ( GL_FALSE == compileStatus ) {
-    qDebug() << "Couldn't compile shader.";
+    qDebug() << "Couldn't compile shader. Shader log:";
+
+    this->printShaderLog( shader);
+
     glDeleteShader( shader );
     return false;
   }
@@ -77,12 +81,14 @@ bool PipelineProgram::link() {
   glLinkProgram( this->id );
 
   if ( glGetError() ) {
-    qDebug() << "Couldn't link program.";
+    qDebug() << "Couldn't link program. Log:";
+    this->printLog();
     return false;
   }
 
   if ( ! this->isLinked() ) {
-    qDebug() << "Couldn't link program.";
+    qDebug() << "Couldn't link program. Log:";
+    this->printLog();
     return false;
   }
 
@@ -111,5 +117,25 @@ bool PipelineProgram::enable( bool enable ) {
   }
 
   return true;
+}
+
+GLint PipelineProgram::getUniformLocation( char * name ) {
+  return glGetUniformLocation( this->id, name );
+}
+
+void PipelineProgram::printShaderLog( GLuint shader ) {
+  char msg[ 3000 ];
+  int length;
+  glGetShaderInfoLog( shader, 2999, & length, msg );
+  msg[ length + 1 ] = 0;
+  qDebug() << msg;
+}
+
+void PipelineProgram::printLog() {
+  char msg[ 3000 ];
+  int length;
+  glGetProgramInfoLog( this->id, 2999, & length, msg );
+  msg[ length + 1 ] = 0;
+  qDebug() << msg;
 }
 
