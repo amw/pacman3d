@@ -15,11 +15,14 @@ Game::Game( QWidget* parent )
     ),
     board( "original" ),
     hero( & this->board ),
+    timer( this ),
     motionBlurFrames( 0 ),
     background( QColor::fromRgbF( 0.2f, 0.2f, 0.2f ) ),
     centerCamera( true ),
     cameraZoom( 1.0f )
 {
+  this->timer.setSingleShot( true );
+  connect( & this->timer, SIGNAL( timeout() ), this, SLOT( updateGL() ) );
 }
 
 Game::~Game() {
@@ -96,11 +99,9 @@ void Game::paintGL() {
     this->paintFrame( this->lastFrame.restart() );
   }
 
-  qApp->postEvent(
-    this, new QPaintEvent( QRegion() ), Qt::LowEventPriority - 100
-  );
-
   ++this->framesRenderedSinceLastReport;
+
+  this->timer.start();
 }
 
 void Game::paintWithMotionBlur( int timeStep ) {

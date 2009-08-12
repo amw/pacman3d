@@ -5,6 +5,7 @@
 #include "PacMan.hpp"
 #include <QGLWidget>
 #include <QTime>
+#include <QTimer>
 
 #define FOVY 45.0f
 #define MS_TO_REPORT_FPS 1000
@@ -37,6 +38,8 @@ class Game : public QGLWidget {
   private:
     GameBoard board;
     PacMan hero;
+
+    QTimer timer;
 
     int motionBlurFrames;
     QTime lastFrame;
