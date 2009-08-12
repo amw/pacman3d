@@ -7,6 +7,7 @@
 #include <QTime>
 
 #define FOVY 45.0f
+#define MB_FRAMES 3
 #define MS_TO_REPORT_FPS 1000
 
 class QKeyEvent;
@@ -29,16 +30,26 @@ class Game : public QGLWidget {
     void paintGL();
 
   private:
+    void paintWithMotionBlur();
+    void paintWithoutMotionBlur();
+    void paintFrame();
     void printFpsReport();
     void refreshCamera();
 
   private:
     QTime lastFpsReport;
     int framesRenderedSinceLastReport;
+
     GameBoard board;
     PacMan hero;
+
     QColor background;
+
     double aspectRatio;
+
+    bool motionBlur;
+    int motionBlurFrame;
+
     bool centerCamera;
     bool isometricCamera;
     bool followingCamera;

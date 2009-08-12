@@ -10,15 +10,17 @@
 
 Game::Game( QWidget* parent )
   : QGLWidget(
-      QGLFormat( QGL::AlphaChannel | QGL::SampleBuffers ),
+      QGLFormat( QGL::AlphaChannel | QGL::SampleBuffers | QGL::AccumBuffer ),
       parent
     ),
     board( "original" ),
     hero( & this->board ),
+    background( QColor::fromRgbF( 0.2f, 0.2f, 0.2f ) ),
+    motionBlur( false ),
+    centerCamera( true ),
     cameraZoom( 1.0f )
 {
-  this->background = QColor::fromRgbF( 0.2, 0.2, 0.2 );
-  this->centerCamera = true;
+  this->setAutoBufferSwap( false );
 }
 
 Game::~Game() {
@@ -80,8 +82,48 @@ void Game::resizeGL( int width, int height ) {
 }
 
 void Game::paintGL() {
+  if ( motionBlur ) {
+    this->paintWithMotionBlur();
+  }
+  else {
+    this->paintWithoutMotionBlur();
+  }
+
+  qApp->postEvent(
+    this, new QPaintEvent( QRegion() ), Qt::LowEventPriority - 100
+  );
+}
+
+void Game::paintWithMotionBlur() {
+  if ( ! this->motionBlurFrame ) {
+    this->printFpsReport();
+
+    glClear( GL_ACCUM_BUFFER_BIT );
+  }
+
+  this->paintFrame();
+  glAccum( GL_ACCUM, ( 1.0f / (double) MB_FRAMES ) );
+  ++this->motionBlurFrame;
+
+  if ( MB_FRAMES == this->motionBlurFrame ) {
+    glAccum( GL_RETURN, 1.0f );
+    this->swapBuffers();
+    this->motionBlurFrame = 0;
+    ++this->framesRenderedSinceLastReport;
+  }
+}
+
+void Game::paintWithoutMotionBlur() {
   this->printFpsReport();
 
+  this->paintFrame();
+
+  this->swapBuffers();
+
+  ++this->framesRenderedSinceLastReport;
+}
+
+void Game::paintFrame() {
   this->hero.updatePosition();
 
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -93,14 +135,6 @@ void Game::paintGL() {
 
   this->board.render( *this );
   this->hero.render( *this );
-
-  glFinish();
-
-  qApp->postEvent(
-    this, new QPaintEvent( QRegion() ), Qt::LowEventPriority - 100
-  );
-
-  ++this->framesRenderedSinceLastReport;
 }
 
 void Game::printFpsReport() {
@@ -195,6 +229,17 @@ void Game::keyPressEvent( QKeyEvent* event ) {
     }
     this->refreshCamera();
 
+    event->accept();
+  }
+  else if ( event->key() == Qt::Key_M ) {
+    if ( this->motionBlur ) {
+      qDebug() << "Turning off motion blur.";
+      this->motionBlur = false;
+    }
+    else {
+      qDebug() << "Turning on motion blur.";
+      this->motionBlur = true;
+    }
     event->accept();
   }
   else {
