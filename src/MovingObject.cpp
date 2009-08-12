@@ -2,11 +2,10 @@
 #include <math.h>
 
 
-MovingObject::MovingObject( GameBoard * board )
-  : velocity( 0.0f )
+MovingObject::MovingObject( GameBoard * board ) :
+  board( board ),
+  velocity( 0.0f )
 {
-  this->board = board;
-  this->lastPositionUpdate.start();
 }
 
 const QPointF & MovingObject::getPosition() const {
@@ -22,17 +21,16 @@ double MovingObject::getVelocity() const {
 }
 
 void MovingObject::setPosition( QPointF position ) {
-  this->lastPositionUpdate.restart();
   this->position = position;
 }
 
-void MovingObject::setDirection( QPoint direction ) {
-  this->updatePosition();
+void MovingObject::setDirection( QPoint direction, int timeStep ) {
+  this->updatePosition( timeStep );
   this->direction = direction;
 }
 
-void MovingObject::setVelocity( double velocity ) {
-  this->updatePosition();
+void MovingObject::setVelocity( double velocity, int timeStep ) {
+  this->updatePosition( timeStep );
   this->velocity = velocity;
 }
 
@@ -48,14 +46,12 @@ bool MovingObject::testMovement( double posX, double posY ) {
   }
 }
 
-void MovingObject::updatePosition() {
-  int msElapsed = this->lastPositionUpdate.restart();
-
+void MovingObject::updatePosition( int timeStep ) {
   if ( MINIMUM_VELOCITY > this->velocity ) {
     return;
   }
 
-  double timeFactor = msElapsed / 1000.0f;
+  double timeFactor = timeStep / 1000.0f;
 
   double newX = this->position.x();
   double newY = this->position.y();

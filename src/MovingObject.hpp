@@ -18,10 +18,10 @@ class MovingObject : public QObject {
     const QPointF & getPosition() const;
     const QPoint & getDirection() const;
     double getVelocity() const;
-    void setDirection( QPoint direction );
     void setPosition( QPointF position );
-    void setVelocity( double velocity );
-    void updatePosition();
+    void setDirection( QPoint direction, int timeStep );
+    void setVelocity( double velocity, int timeStep );
+    void updatePosition( int timeStep );
 
   protected:
     double alignToCenter( double position );
@@ -34,7 +34,6 @@ class MovingObject : public QObject {
 
   protected:
     GameBoard * board;
-    QTime lastPositionUpdate;
     QPointF position;
     QPoint direction;
     double velocity;

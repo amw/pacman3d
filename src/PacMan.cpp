@@ -55,7 +55,7 @@ void PacMan::setDesiredDirection( QPoint direction ) {
     return;
   }
   else if ( - this->direction == direction ) {
-    this->setDirection( direction );
+    this->direction = direction;
     this->desiredDirection = QPoint();
   }
   else {

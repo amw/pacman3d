@@ -15,12 +15,11 @@ Game::Game( QWidget* parent )
     ),
     board( "original" ),
     hero( & this->board ),
+    motionBlurFrames( 0 ),
     background( QColor::fromRgbF( 0.2f, 0.2f, 0.2f ) ),
-    motionBlur( false ),
     centerCamera( true ),
     cameraZoom( 1.0f )
 {
-  this->setAutoBufferSwap( false );
 }
 
 Game::~Game() {
@@ -41,7 +40,7 @@ bool Game::initialize() {
   }
 
   this->hero.setPosition( this->board.getPlayer1Start() );
-  this->hero.setVelocity( 3.0f );
+  this->hero.setVelocity( 3.0f, 0 );
 
   return true;
 }
@@ -82,49 +81,42 @@ void Game::resizeGL( int width, int height ) {
 }
 
 void Game::paintGL() {
-  if ( motionBlur ) {
-    this->paintWithMotionBlur();
+  this->printFpsReport();
+
+  if ( ! this->lastFrame.isValid() ) {
+    this->lastFrame.start();
+  }
+
+  if ( this->motionBlurFrames ) {
+    this->paintWithMotionBlur( this->lastFrame.restart() );
   }
   else {
-    this->paintWithoutMotionBlur();
+    this->paintFrame( this->lastFrame.restart() );
   }
 
   qApp->postEvent(
     this, new QPaintEvent( QRegion() ), Qt::LowEventPriority - 100
   );
-}
-
-void Game::paintWithMotionBlur() {
-  if ( ! this->motionBlurFrame ) {
-    this->printFpsReport();
-
-    glClear( GL_ACCUM_BUFFER_BIT );
-  }
-
-  this->paintFrame();
-  glAccum( GL_ACCUM, ( 1.0f / (double) MB_FRAMES ) );
-  ++this->motionBlurFrame;
-
-  if ( MB_FRAMES == this->motionBlurFrame ) {
-    glAccum( GL_RETURN, 1.0f );
-    this->swapBuffers();
-    this->motionBlurFrame = 0;
-    ++this->framesRenderedSinceLastReport;
-  }
-}
-
-void Game::paintWithoutMotionBlur() {
-  this->printFpsReport();
-
-  this->paintFrame();
-
-  this->swapBuffers();
 
   ++this->framesRenderedSinceLastReport;
 }
 
-void Game::paintFrame() {
-  this->hero.updatePosition();
+void Game::paintWithMotionBlur( int timeStep ) {
+  double accumFactor = 1.0f / (double) ( this->motionBlurFrames + 1 );
+  glAccum( GL_MULT, accumFactor );
+
+  timeStep = timeStep / this->motionBlurFrames;
+
+  for ( int i = 0; i < this->motionBlurFrames; ++i ) {
+    this->paintFrame( timeStep );
+    glAccum( GL_ACCUM, accumFactor );
+  }
+
+  glAccum( GL_RETURN, 1.0f );
+}
+
+void Game::paintFrame( int timeStep ) {
+  this->hero.updatePosition( timeStep );
 
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
@@ -231,16 +223,28 @@ void Game::keyPressEvent( QKeyEvent* event ) {
 
     event->accept();
   }
+  else if ( event->key() == Qt::Key_N ) {
+    if ( this->motionBlurFrames ) {
+      --this->motionBlurFrames;
+      if ( ! this->motionBlurFrames ) {
+        qDebug() << "Turning off motion blur.";
+      }
+      else {
+        qDebug() << "Decreasing motion blur frames to"
+                 << this->motionBlurFrames;
+      }
+    }
+    event->accept();
+  }
   else if ( event->key() == Qt::Key_M ) {
-    if ( this->motionBlur ) {
-      qDebug() << "Turning off motion blur.";
-      this->motionBlur = false;
+    if ( ! this->motionBlurFrames ) {
+      qDebug() << "Turning on motion blur.";
+      glClear( GL_ACCUM_BUFFER_BIT );
     }
     else {
-      qDebug() << "Turning on motion blur.";
-      this->motionBlur = true;
-      this->motionBlurFrame = 0;
+      qDebug() << "Increasing motion blur frames to" << this->motionBlurFrames;
     }
+    ++this->motionBlurFrames;
     event->accept();
   }
   else {
