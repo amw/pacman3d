@@ -93,8 +93,8 @@ void Game::paintGL() {
   }
 
   if ( this->needsRepaint ) {
-    glClear( GL_ACCUM_BUFFER_BIT );
     this->paintFrame( this->lastFrame.restart() );
+    glAccum( GL_LOAD, 1.0f );
     this->needsRepaint = false;
   }
   if ( this->motionBlurFrames ) {
@@ -255,7 +255,7 @@ void Game::keyPressEvent( QKeyEvent* event ) {
   else if ( event->key() == Qt::Key_M ) {
     if ( ! this->motionBlurFrames ) {
       qDebug() << "Turning on motion blur.";
-      glClear( GL_ACCUM_BUFFER_BIT );
+      glAccum( GL_LOAD, 1.0f );
     }
     else {
       qDebug() << "Increasing motion blur frames to" << this->motionBlurFrames;
