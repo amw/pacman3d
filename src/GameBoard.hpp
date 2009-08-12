@@ -40,6 +40,7 @@ class GameBoard : public QObject {
     void addWallBlock( int x, int y );
     void addGrass();
     void addFloorBlock( int x, int y, GLuint texture );
+    void addPacDot( int x, int y );
 
   private:
     QString name;
@@ -50,14 +51,18 @@ class GameBoard : public QObject {
     QPoint player1Start;
     QVector< QPoint > ghostStarts;
 
-    GLuint wallsList;
+    GLuint staticList;
+    GLUquadric* dotQuadric;
+    GLuint dotList;
     GLuint wallTexture;
     GLuint roofTexture;
     GLuint grassTexture;
     GLuint ghostsStartTexture;
+    GLuint dotTexture;
 
     enum BlockTypes {
-      Wall, Dot, Path, Powerup, Teleport1, PlayerStart, GhostsStart, PlayerWall
+      Wall, Dot, UsedDot, Path, Powerup, Teleport1,
+      PlayerStart, GhostsStart, PlayerWall
     };
 };
 

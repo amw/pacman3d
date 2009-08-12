@@ -18,7 +18,9 @@ GameBoard::~GameBoard() {
     delete[] this->blocks;
   }
 
-  glDeleteLists( this->wallsList, 1 );
+  glDeleteLists( this->staticList, 1 );
+  glDeleteLists( this->dotList, 1 );
+  gluDeleteQuadric( this->dotQuadric );
 }
 
 bool GameBoard::initialize() {
@@ -181,9 +183,11 @@ void GameBoard::initializeGL( QGLWidget & target ) {
   this->roofTexture = target.bindTexture( roof );
   QImage tiles( "textures/tiles.jpg" );
   this->ghostsStartTexture = target.bindTexture( tiles );
+  QImage dot( "textures/dot.png" );
+  this->dotTexture = target.bindTexture( dot );
 
-  this->wallsList = glGenLists( 1 );
-  glNewList( this->wallsList, GL_COMPILE );
+  this->staticList = glGenLists( 1 );
+  glNewList( this->staticList, GL_COMPILE );
   {
     for ( int y = 0; y < this->height; ++y ) {
       for ( int x = 0; x < this->width; ++x ) {
@@ -211,6 +215,16 @@ void GameBoard::initializeGL( QGLWidget & target ) {
       }
     }
     this->addGrass();
+  }
+  glEndList();
+
+  this->dotList = glGenLists( 1 );
+  this->dotQuadric = gluNewQuadric();
+  gluQuadricTexture( this->dotQuadric, true );
+  glNewList( this->dotList, GL_COMPILE );
+  {
+    glBindTexture( GL_TEXTURE_2D, this->dotTexture );
+    gluSphere( this->dotQuadric, 0.1f, 360 / 30, 180 / 30 );
   }
   glEndList();
 }
@@ -307,7 +321,18 @@ void GameBoard::addFloorBlock( int x, int y, GLuint texture ) {
 }
 
 void GameBoard::render( QGLWidget & ) {
-  glCallList( this->wallsList );
+  glCallList( this->staticList );
+
+  for ( int y = 0; y < this->height; ++y ) {
+    for ( int x = 0; x < this->width; ++x ) {
+      if ( GameBoard::Dot == this->blocks[ y ][ x ] ) {
+        glPushMatrix();
+        glTranslated( x * BLOCK_WIDTH + 0.5f, y * BLOCK_WIDTH + 0.5f, 0.5f );
+        glCallList( this->dotList );
+        glPopMatrix();
+      }
+    }
+  }
 }
 
 QPoint GameBoard::getSize() {
