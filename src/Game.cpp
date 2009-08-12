@@ -239,6 +239,7 @@ void Game::keyPressEvent( QKeyEvent* event ) {
     else {
       qDebug() << "Turning on motion blur.";
       this->motionBlur = true;
+      this->motionBlurFrame = 0;
     }
     event->accept();
   }
