@@ -78,6 +78,8 @@ void Game::resizeGL( int width, int height ) {
   glLoadIdentity();
 
   gluPerspective( FOVY, this->aspectRatio, 0.5f, 50.0f );
+
+  glClear( GL_ACCUM_BUFFER_BIT );
 }
 
 void Game::paintGL() {
@@ -102,14 +104,22 @@ void Game::paintGL() {
 }
 
 void Game::paintWithMotionBlur( int timeStep ) {
-  double accumFactor = 1.0f / (double) ( this->motionBlurFrames + 1 );
+  int frames = this->motionBlurFrames;
+  if ( frames > timeStep ) {
+    frames = timeStep;
+  }
+
+  double accumFactor = 1.0f / (double) ( frames + 1 );
   glAccum( GL_MULT, accumFactor );
 
-  timeStep = timeStep / this->motionBlurFrames;
+  int timeLeft = timeStep;
+  for ( int framesLeft = frames; framesLeft; --framesLeft ) {
+    int step = timeLeft / framesLeft;
 
-  for ( int i = 0; i < this->motionBlurFrames; ++i ) {
-    this->paintFrame( timeStep );
+    this->paintFrame( step );
     glAccum( GL_ACCUM, accumFactor );
+
+    timeLeft -= step;
   }
 
   glAccum( GL_RETURN, 1.0f );
