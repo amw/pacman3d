@@ -27,6 +27,7 @@ Game::Game( QWidget* parent )
 
 Game::~Game() {
   this->makeCurrent();
+  delete this->shaderProgram;
 }
 
 QSize Game::minimumSizeHint() const {
@@ -69,6 +70,13 @@ void Game::initializeGL() {
 
   this->board.initializeGL( *this );
   this->hero.initializeGL( *this );
+
+  this->shaderProgram = new PipelineProgram();
+  this->shaderProgram->attachShader(
+    GL_FRAGMENT_SHADER, "shaders/simplyred.glsl"
+  );
+  this->shaderProgram->link();
+  this->shaderProgram->enable( true );
 }
 
 void Game::resizeGL( int width, int height ) {

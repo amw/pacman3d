@@ -3,6 +3,7 @@
 
 #include "GameBoard.hpp"
 #include "PacMan.hpp"
+#include "PipelineProgram.hpp"
 #include <QGLWidget>
 #include <QTime>
 #include <QTimer>
@@ -38,6 +39,8 @@ class Game : public QGLWidget {
   private:
     GameBoard board;
     PacMan hero;
+
+    PipelineProgram * shaderProgram;
 
     QTimer timer;
     bool needsRepaint;
