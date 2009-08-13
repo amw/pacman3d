@@ -247,6 +247,7 @@ void GameBoard::addWallBlock( int x, int y ) {
   glBindTexture( GL_TEXTURE_2D, this->roofTexture );
   glBegin( GL_QUADS );
   {
+    glNormal3f( 0.0f, 0.0f, 1.0f );
     glTexCoord2f( s1, t1 ); glVertex3d( x1, y1, z2 );
     glTexCoord2f( s2, t1 ); glVertex3d( x2, y1, z2 );
     glTexCoord2f( s2, t2 ); glVertex3d( x2, y2, z2 );
@@ -257,21 +258,25 @@ void GameBoard::addWallBlock( int x, int y ) {
   glBindTexture( GL_TEXTURE_2D, this->wallTexture );
   glBegin( GL_QUADS );
   {
+    glNormal3f( 0.0f, 1.0f, 0.0f );
     glTexCoord2f( 1.0f, 0.0f ); glVertex3d( x1, y2, z1 );
     glTexCoord2f( 1.0f, 1.2f ); glVertex3d( x1, y2, z2 );
     glTexCoord2f( 0.0f, 1.2f ); glVertex3d( x2, y2, z2 );
     glTexCoord2f( 0.0f, 0.0f ); glVertex3d( x2, y2, z1 );
 
+    glNormal3f( 0.0f, -1.0f, 0.0f );
     glTexCoord2f( 0.0f, 0.0f ); glVertex3d( x1, y1, z1 );
     glTexCoord2f( 1.0f, 0.0f ); glVertex3d( x2, y1, z1 );
     glTexCoord2f( 1.0f, 1.2f ); glVertex3d( x2, y1, z2 );
     glTexCoord2f( 0.0f, 1.2f ); glVertex3d( x1, y1, z2 );
 
+    glNormal3f( 1.0f, 0.0f, 0.0f );
     glTexCoord2f( 0.0f, 0.0f ); glVertex3d( x2, y1, z1 );
     glTexCoord2f( 1.0f, 0.0f ); glVertex3d( x2, y2, z1 );
     glTexCoord2f( 1.0f, 1.2f ); glVertex3d( x2, y2, z2 );
     glTexCoord2f( 0.0f, 1.2f ); glVertex3d( x2, y1, z2 );
 
+    glNormal3f( -1.0f, 0.0f, 0.0f );
     glTexCoord2f( 1.0f, 0.0f ); glVertex3d( x1, y1, z1 );
     glTexCoord2f( 1.0f, 1.2f ); glVertex3d( x1, y1, z2 );
     glTexCoord2f( 0.0f, 1.2f ); glVertex3d( x1, y2, z2 );
@@ -292,6 +297,7 @@ void GameBoard::addGrass() {
   glBindTexture( GL_TEXTURE_2D, this->grassTexture );
   glBegin( GL_QUADS );
   {
+    glNormal3f( 0.0f, 0.0f, 1.0f );
     glTexCoord2f( 0.0f, 0.0f ); glVertex3d( x1, y1, z2 );
     glTexCoord2f( 4.0f, 0.0f ); glVertex3d( x2, y1, z2 );
     glTexCoord2f( 4.0f, 4.0f ); glVertex3d( x2, y2, z2 );
@@ -312,6 +318,7 @@ void GameBoard::addFloorBlock( int x, int y, GLuint texture ) {
   glBindTexture( GL_TEXTURE_2D, texture );
   glBegin( GL_QUADS );
   {
+    glNormal3f( 0.0f, 0.0f, 1.0f );
     glTexCoord2f( 0.0f, 0.0f ); glVertex3d( x1, y1, z2 );
     glTexCoord2f( 1.0f, 0.0f ); glVertex3d( x2, y1, z2 );
     glTexCoord2f( 1.0f, 1.0f ); glVertex3d( x2, y2, z2 );
