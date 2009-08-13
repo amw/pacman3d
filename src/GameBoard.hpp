@@ -27,11 +27,12 @@ class GameBoard : public QObject {
     bool initialize();
     void initializeGL( QGLWidget & target );
     void render( QGLWidget & target );
-    QPoint getSize();
-    QPointF getRealSize();
-    QPointF getPlayer1Start();
-    bool isAccessibleByPlayer( int x, int y );
-    bool isAccessibleByGhost( int x, int y );
+    QPoint getSize() const;
+    QPointF getRealSize() const;
+    QPointF getPlayer1Start() const;
+    const QVector< QPointF > & getPacDots() const;
+    bool isAccessibleByPlayer( int x, int y ) const;
+    bool isAccessibleByGhost( int x, int y ) const;
 
   private:
     bool readBoardSize( QFile & map );
@@ -50,6 +51,7 @@ class GameBoard : public QObject {
     bool allocatedBlocks;
     QPoint player1Start;
     QVector< QPoint > ghostStarts;
+    QVector< QPointF > pacDots;
 
     GLuint staticList;
     GLUquadric* dotQuadric;

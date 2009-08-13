@@ -125,6 +125,9 @@ bool GameBoard::readBoardBlocks( QFile & map ) {
       switch ( line.at( x - 1 ).toAscii() ) {
         case BLOCK_DOT:
           element = GameBoard::Dot;
+          this->pacDots.append(
+            QPointF( x * BLOCK_WIDTH + 0.5f, y * BLOCK_WIDTH + 0.5f )
+          );
           break;
         case BLOCK_WALL:
           element = GameBoard::Wall;
@@ -330,34 +333,36 @@ void GameBoard::addFloorBlock( int x, int y, GLuint texture ) {
 void GameBoard::render( QGLWidget & ) {
   glCallList( this->staticList );
 
-  for ( int y = 0; y < this->height; ++y ) {
-    for ( int x = 0; x < this->width; ++x ) {
-      if ( GameBoard::Dot == this->blocks[ y ][ x ] ) {
-        glPushMatrix();
-        glTranslated( x * BLOCK_WIDTH + 0.5f, y * BLOCK_WIDTH + 0.5f, 0.5f );
-        glCallList( this->dotList );
-        glPopMatrix();
-      }
-    }
+  QVector< QPointF >::const_iterator i;
+
+  for ( i = this->pacDots.begin(); i != this->pacDots.end(); ++i ) {
+    glPushMatrix();
+    glTranslated( i->x(), i->y(), 0.5f );
+    glCallList( this->dotList );
+    glPopMatrix();
   }
 }
 
-QPoint GameBoard::getSize() {
+QPoint GameBoard::getSize() const {
   return QPoint( this->width, this->height );
 }
 
-QPointF GameBoard::getRealSize() {
+QPointF GameBoard::getRealSize() const {
   return QPointF( this->width * BLOCK_WIDTH, this->height * BLOCK_WIDTH );
 }
 
-QPointF GameBoard::getPlayer1Start() {
+QPointF GameBoard::getPlayer1Start() const {
   return QPointF(
     this->player1Start.x() * BLOCK_WIDTH + 0.5f,
     this->player1Start.y() * BLOCK_WIDTH + 0.5f
   );
 }
 
-bool GameBoard::isAccessibleByGhost( int x, int y ) {
+const QVector< QPointF > & GameBoard::getPacDots() const {
+  return this->pacDots;
+}
+
+bool GameBoard::isAccessibleByGhost( int x, int y ) const {
   if (
     this->blocks[ y ][ x ] != GameBoard::Wall
   ) {
@@ -368,7 +373,7 @@ bool GameBoard::isAccessibleByGhost( int x, int y ) {
   }
 }
 
-bool GameBoard::isAccessibleByPlayer( int x, int y ) {
+bool GameBoard::isAccessibleByPlayer( int x, int y ) const {
   if (
     this->blocks[ y ][ x ] != GameBoard::Wall &&
     this->blocks[ y ][ x ] != GameBoard::PlayerWall
