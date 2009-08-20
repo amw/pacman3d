@@ -109,7 +109,7 @@ bool PipelineProgram::enable( bool enable ) {
     glUseProgram( this->id );
   }
   else {
-    glUseProgram( 0 );
+    glUseProgram( GL_FALSE );
   }
 
   if ( glGetError() ) {

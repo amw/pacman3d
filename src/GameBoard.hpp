@@ -30,7 +30,8 @@ class GameBoard : public QObject {
     QPoint getSize() const;
     QPointF getRealSize() const;
     QPointF getPlayer1Start() const;
-    const QVector< QPointF > & getPacDots() const;
+    QVector< QPointF > getGhostStarts() const;
+    QVector< QPointF > getPacDots() const;
     bool isAccessibleByPlayer( int x, int y ) const;
     bool isAccessibleByGhost( int x, int y ) const;
 
@@ -49,8 +50,8 @@ class GameBoard : public QObject {
     int height;
     int** blocks;
     bool allocatedBlocks;
-    QPoint player1Start;
-    QVector< QPoint > ghostStarts;
+    QPointF player1Start;
+    QVector< QPointF > ghostStarts;
     QVector< QPointF > pacDots;
 
     GLuint staticList;

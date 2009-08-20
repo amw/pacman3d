@@ -1,8 +1,8 @@
+#include "GL/glew.h"
 #include "Game.hpp"
 #include <QApplication>
 #include <QKeyEvent>
 #include <QPaintEvent>
-#include <QRegion>
 #include <QDebug>
 #include <math.h>
 
@@ -21,6 +21,8 @@ Game::Game( QWidget* parent )
     centerCamera( true ),
     cameraZoom( 1.0f )
 {
+  this->initializeLights();
+
   this->timer.setSingleShot( true );
   connect( & this->timer, SIGNAL( timeout() ), this, SLOT( updateGL() ) );
 }
@@ -54,6 +56,13 @@ void Game::start() {
 }
 
 void Game::initializeGL() {
+  GLenum err = glewInit();
+  if ( GLEW_OK != err ) {
+    qDebug() << "GLEW failed. Reason:";
+    qDebug() << (char*) glewGetErrorString( err );
+    qApp->exit( 1 );
+  }
+
   this->qglClearColor( this->background );
 
   glEnable( GL_MULTISAMPLE );
@@ -66,19 +75,25 @@ void Game::initializeGL() {
   glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
   glEnable( GL_TEXTURE_2D );
-  glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
+  glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+
+  glEnable( GL_LIGHTING );
+
+  if ( ! GLEW_VERSION_2_0 ) {
+    qDebug() << "You don't have OpenGL 2.0. Expect the unexpected.";
+
+    this->shadersAreSupported = false;
+    this->usingShaders = false;
+  }
+  else {
+    this->shadersAreSupported = true;
+    this->usingShaders = true;
+    this->initializeShaders();
+    this->shaderProgram->enable( true );
+  }
 
   this->board.initializeGL( *this );
   this->hero.initializeGL( *this );
-
-  this->shaderProgram = new PipelineProgram();
-  this->shaderProgram->attachShader(
-    GL_FRAGMENT_SHADER, "shaders/simplyred.glsl"
-  );
-  this->shaderProgram->link();
-  this->shaderProgram->enable( true );
-  int ambientLight = this->shaderProgram->getUniformLocation( "ambientLight" );
-  glUniform4f( ambientLight, 0.9f, 0.2f, 0.2f, 1.0f );
 }
 
 void Game::resizeGL( int width, int height ) {
@@ -150,6 +165,7 @@ void Game::paintFrame( int timeStep ) {
   glLoadIdentity();
 
   this->refreshCamera();
+  this->prepareLights();
 
   this->board.render( *this );
   this->hero.render( *this );
@@ -197,6 +213,71 @@ void Game::refreshCamera() {
       pacman.x(), pacman.y(), 0.0f,
       0.0f, 0.0f, 1.0f
     );
+  }
+}
+
+void Game::initializeShaders() {
+  this->shaderProgram = new PipelineProgram();
+  this->shaderProgram->attachShader(
+    GL_VERTEX_SHADER, "shaders/default.vert"
+  );
+  this->shaderProgram->attachShader(
+    GL_FRAGMENT_SHADER, "shaders/default.frag"
+  );
+  this->shaderProgram->link();
+
+  this->ghostsCountLocation =
+    this->shaderProgram->getUniformLocation( "ghostsCount" );
+  this->dotsCountLocation =
+    this->shaderProgram->getUniformLocation( "dotsCount" );
+}
+
+void Game::initializeLights() {
+  this->ambientLight[ 0 ] = 1.0;
+  this->ambientLight[ 1 ] = 1.0;
+  this->ambientLight[ 2 ] = 1.0;
+  this->ambientLight[ 3 ] = 1.0;
+
+  this->ghostStartsDiffuse[ 0 ] = 1.0f;
+  this->ghostStartsDiffuse[ 1 ] = 1.0f;
+  this->ghostStartsDiffuse[ 2 ] = 0.7f;
+  this->ghostStartsDiffuse[ 3 ] = 1.0f;
+
+  this->ghostStartsSpecular[ 0 ] = 1.0f;
+  this->ghostStartsSpecular[ 1 ] = 1.0f;
+  this->ghostStartsSpecular[ 2 ] = 1.0f;
+  this->ghostStartsSpecular[ 3 ] = 1.0f;
+}
+
+void Game::prepareLights() {
+  glLightModelfv( GL_LIGHT_MODEL_AMBIENT, this->ambientLight );
+
+  float position[ 4 ] = { 0.0f, 0.0f, 4.0f, 1.0f };
+
+  QVector< QPointF > lights = this->board.getGhostStarts();
+  QVector< QPointF >::const_iterator i;
+
+  GLenum light = GL_LIGHT0;
+  for ( i = lights.begin(); i != lights.end(); ++i ) {
+    position[ 0 ] = i->x();
+    position[ 1 ] = i->y();
+
+    glLightf( light, GL_LINEAR_ATTENUATION, 0.1f );
+    glLightf( light, GL_QUADRATIC_ATTENUATION, 0.1f );
+    glLightfv( light, GL_POSITION, position );
+    glLightfv( light, GL_DIFFUSE, this->ghostStartsDiffuse );
+    glLightfv( light, GL_SPECULAR, this->ghostStartsSpecular );
+    glEnable( light );
+
+    ++light;
+
+    if ( light - GL_LIGHT0 > 7 ) {
+      break;
+    }
+  }
+
+  while ( light < GL_LIGHT0 + 8 ) {
+    glDisable( light++ );
   }
 }
 
@@ -271,6 +352,24 @@ void Game::keyPressEvent( QKeyEvent* event ) {
       qDebug() << "Increasing motion blur frames to" << this->motionBlurFrames;
     }
     ++this->motionBlurFrames;
+    event->accept();
+  }
+  else if ( event->key() == Qt::Key_S ) {
+    if ( this->shadersAreSupported ) {
+      if ( this->usingShaders ) {
+        this->usingShaders = false;
+        this->shaderProgram->enable( false );
+        qDebug() << "Shaders turned off.";
+      }
+      else {
+        this->usingShaders = true;
+        this->shaderProgram->enable( true );
+        qDebug() << "Shaders turned on.";
+      }
+    }
+    else {
+      qDebug() << "You need OpenGL 2.0 to use shaders.";
+    }
     event->accept();
   }
   else {

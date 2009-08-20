@@ -147,12 +147,18 @@ bool GameBoard::readBoardBlocks( QFile & map ) {
             return false;
           }
           foundPlayerStart = true;
-          this->player1Start = QPoint( x, y );
+          this->player1Start = QPointF(
+            x * BLOCK_WIDTH + 0.5f,
+            y * BLOCK_WIDTH + 0.5f
+          );
           element = GameBoard::PlayerStart;
           break;
         case BLOCK_GHOSTS_START:
           element = GameBoard::GhostsStart;
-          this->ghostStarts.append( QPoint( x, y ) );
+          this->ghostStarts.append( QPointF(
+            x * BLOCK_WIDTH + 0.5f,
+            y * BLOCK_WIDTH + 0.5f
+          ) );
           break;
         case BLOCK_PLAYER_WALL:
           element = GameBoard::PlayerWall;
@@ -234,10 +240,10 @@ void GameBoard::initializeGL( QGLWidget & target ) {
 
 void GameBoard::addWallBlock( int x, int y ) {
   double x1 = BLOCK_WIDTH * x;
-  double x2 = x1 + BLOCK_WIDTH;
+  double x2 = x1 + BLOCK_WIDTH + 0.01f;
 
   double y1 = BLOCK_WIDTH * y;
-  double y2 = y1 + BLOCK_WIDTH;
+  double y2 = y1 + BLOCK_WIDTH + 0.01f;
 
   double z1 = - BLOCK_WIDTH * 0.2;
   double z2 = + BLOCK_WIDTH;
@@ -352,13 +358,14 @@ QPointF GameBoard::getRealSize() const {
 }
 
 QPointF GameBoard::getPlayer1Start() const {
-  return QPointF(
-    this->player1Start.x() * BLOCK_WIDTH + 0.5f,
-    this->player1Start.y() * BLOCK_WIDTH + 0.5f
-  );
+  return this->player1Start;
 }
 
-const QVector< QPointF > & GameBoard::getPacDots() const {
+QVector< QPointF > GameBoard::getGhostStarts() const {
+  return this->ghostStarts;
+}
+
+QVector< QPointF > GameBoard::getPacDots() const {
   return this->pacDots;
 }
 

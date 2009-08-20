@@ -35,11 +35,16 @@ class Game : public QGLWidget {
     void paintFrame( int timeStep );
     void printFpsReport();
     void refreshCamera();
+    void initializeShaders();
+    void initializeLights();
+    void prepareLights();
 
   private:
     GameBoard board;
     PacMan hero;
 
+    bool shadersAreSupported;
+    bool usingShaders;
     PipelineProgram * shaderProgram;
 
     QTimer timer;
@@ -58,6 +63,13 @@ class Game : public QGLWidget {
     bool isometricCamera;
     bool followingCamera;
     double cameraZoom;
+
+    float ambientLight[ 4 ];
+    float ghostStartsDiffuse[ 4 ];
+    float ghostStartsSpecular[ 4 ];
+
+    int ghostsCountLocation;
+    int dotsCountLocation;
 };
 
 #endif
