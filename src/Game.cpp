@@ -225,11 +225,6 @@ void Game::initializeShaders() {
     GL_FRAGMENT_SHADER, "shaders/default.frag"
   );
   this->shaderProgram->link();
-
-  this->ghostsCountLocation =
-    this->shaderProgram->getUniformLocation( "ghostsCount" );
-  this->dotsCountLocation =
-    this->shaderProgram->getUniformLocation( "dotsCount" );
 }
 
 void Game::initializeLights() {

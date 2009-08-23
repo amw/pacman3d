@@ -67,9 +67,6 @@ class Game : public QGLWidget {
     float ambientLight[ 4 ];
     float ghostStartsDiffuse[ 4 ];
     float ghostStartsSpecular[ 4 ];
-
-    int ghostsCountLocation;
-    int dotsCountLocation;
 };
 
 #endif

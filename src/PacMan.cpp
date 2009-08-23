@@ -10,6 +10,8 @@ struct XYZ {
 PacMan::PacMan( GameBoard * board )
   : MovingObject( board )
 {
+  this->material.setSpecular( 1.0f, 1.0f, 1.0f );
+  this->material.setShininess( 50.0f );
 }
 
 PacMan::~PacMan() {
@@ -28,6 +30,7 @@ void PacMan::initializeGL( QGLWidget & target ) {
   glNewList( this->sphereList, GL_COMPILE );
   {
     glBindTexture( GL_TEXTURE_2D, this->pacmanTexture );
+    this->material.updateGlState( Material::Front );
     glRotatef( 180, 1.0f, 0.0f, 0.0f );
     gluSphere( this->sphereQuadric, 0.4f, 360 / 5, 180 / 5 );
   }

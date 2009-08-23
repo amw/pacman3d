@@ -3,6 +3,7 @@
 
 #include "GameBoard.hpp"
 #include "MovingObject.hpp"
+#include "Material.hpp"
 #include <QGLWidget>
 
 class PacMan : public MovingObject {
@@ -24,6 +25,7 @@ class PacMan : public MovingObject {
     void addSphereVertex( int theta, int phi );
 
   private:
+    Material material;
     QPoint desiredDirection;
     GLUquadric* sphereQuadric;
     GLuint sphereList;

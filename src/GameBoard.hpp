@@ -1,6 +1,7 @@
 #ifndef GAMEBOARD_HPP
 #define GAMEBOARD_HPP
 
+#include "Material.hpp"
 #include <QGLWidget>
 #include <QString>
 #include <QFile>
@@ -41,7 +42,9 @@ class GameBoard : public QObject {
     bool readBoardBlocks( QFile & map );
     void addWallBlock( int x, int y );
     void addGrass();
-    void addFloorBlock( int x, int y, GLuint texture );
+    void addFloorBlock(
+      int x, int y, GLuint texture, const Material & material
+    );
     void addPacDot( int x, int y );
 
   private:
@@ -53,6 +56,11 @@ class GameBoard : public QObject {
     QPointF player1Start;
     QVector< QPointF > ghostStarts;
     QVector< QPointF > pacDots;
+
+    Material grassMaterial;
+    Material wallMaterial;
+    Material dotsMaterial;
+    Material defaultMaterial;
 
     GLuint staticList;
     GLUquadric* dotQuadric;

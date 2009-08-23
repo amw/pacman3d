@@ -50,6 +50,12 @@ bool GameBoard::initialize() {
     return false;
   }
 
+  this->wallMaterial.setSpecular( 1.0f, 1.0f, 1.0f );
+  this->wallMaterial.setShininess( 0.4f );
+
+  this->dotsMaterial.setSpecular( 1.0f, 1.0f, 1.0f );
+  this->dotsMaterial.setShininess( 80.0f );
+
   return true;
 }
 
@@ -214,11 +220,11 @@ void GameBoard::initializeGL( QGLWidget & target ) {
         else if ( GameBoard::PlayerStart == this->blocks[ y ][ x ] ) {
         }
         else if ( GameBoard::PlayerWall == this->blocks[ y ][ x ] ) {
-          this->addFloorBlock( x, y, this->roofTexture );
+          this->addFloorBlock( x, y, this->roofTexture, this->defaultMaterial );
         }
         else if ( GameBoard::GhostsStart == this->blocks[ y ][ x ] ) {
           this->addFloorBlock(
-            x, y, this->ghostsStartTexture
+            x, y, this->ghostsStartTexture, this->defaultMaterial
           );
         }
       }
@@ -254,6 +260,7 @@ void GameBoard::addWallBlock( int x, int y ) {
   double t2 = (double) ( y + 1 ) / (double) this->height * 4.0f;
 
   glBindTexture( GL_TEXTURE_2D, this->roofTexture );
+  this->wallMaterial.updateGlState( Material::Front );
   glBegin( GL_QUADS );
   {
     glNormal3f( 0.0f, 0.0f, 1.0f );
@@ -304,6 +311,7 @@ void GameBoard::addGrass() {
   double z2 = -0.005f;
 
   glBindTexture( GL_TEXTURE_2D, this->grassTexture );
+  this->grassMaterial.updateGlState( Material::Front );
   glBegin( GL_QUADS );
   {
     glNormal3f( 0.0f, 0.0f, 1.0f );
@@ -315,7 +323,9 @@ void GameBoard::addGrass() {
   glEnd();
 }
 
-void GameBoard::addFloorBlock( int x, int y, GLuint texture ) {
+void GameBoard::addFloorBlock(
+  int x, int y, GLuint texture, const Material & material
+) {
   double x1 = BLOCK_WIDTH * x;
   double x2 = x1 + BLOCK_WIDTH;
 
@@ -325,6 +335,7 @@ void GameBoard::addFloorBlock( int x, int y, GLuint texture ) {
   double z2 = 0.0f;
 
   glBindTexture( GL_TEXTURE_2D, texture );
+  material.updateGlState( Material::Front );
   glBegin( GL_QUADS );
   {
     glNormal3f( 0.0f, 0.0f, 1.0f );
@@ -344,6 +355,7 @@ void GameBoard::render( QGLWidget & ) {
   for ( i = this->pacDots.begin(); i != this->pacDots.end(); ++i ) {
     glPushMatrix();
     glTranslated( i->x(), i->y(), 0.5f );
+    this->dotsMaterial.updateGlState( Material::Front );
     glCallList( this->dotList );
     glPopMatrix();
   }
