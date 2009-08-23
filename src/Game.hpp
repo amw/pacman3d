@@ -3,6 +3,7 @@
 
 #include "GameBoard.hpp"
 #include "PacMan.hpp"
+#include "Light.hpp"
 #include "PipelineProgram.hpp"
 #include <QGLWidget>
 #include <QTime>
@@ -65,8 +66,7 @@ class Game : public QGLWidget {
     double cameraZoom;
 
     float ambientLight[ 4 ];
-    float ghostStartsDiffuse[ 4 ];
-    float ghostStartsSpecular[ 4 ];
+    Light ghostStartsLight;
 };
 
 #endif

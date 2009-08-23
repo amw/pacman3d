@@ -228,41 +228,27 @@ void Game::initializeShaders() {
 }
 
 void Game::initializeLights() {
-  this->ambientLight[ 0 ] = 1.0;
-  this->ambientLight[ 1 ] = 1.0;
-  this->ambientLight[ 2 ] = 1.0;
-  this->ambientLight[ 3 ] = 1.0;
+  this->ambientLight[ 0 ] = 1.0f;
+  this->ambientLight[ 1 ] = 1.0f;
+  this->ambientLight[ 2 ] = 1.0f;
+  this->ambientLight[ 3 ] = 1.0f;
 
-  this->ghostStartsDiffuse[ 0 ] = 1.0f;
-  this->ghostStartsDiffuse[ 1 ] = 1.0f;
-  this->ghostStartsDiffuse[ 2 ] = 0.7f;
-  this->ghostStartsDiffuse[ 3 ] = 1.0f;
-
-  this->ghostStartsSpecular[ 0 ] = 1.0f;
-  this->ghostStartsSpecular[ 1 ] = 1.0f;
-  this->ghostStartsSpecular[ 2 ] = 1.0f;
-  this->ghostStartsSpecular[ 3 ] = 1.0f;
+  this->ghostStartsLight.setDiffuse( 1.0f, 1.0f, 0.7f );
+  this->ghostStartsLight.setSpecular( 1.0f, 1.0f, 1.0f );
+  this->ghostStartsLight.setAttenuation( 1.0f, 0.1f, 0.1f );
 }
 
 void Game::prepareLights() {
   glLightModelfv( GL_LIGHT_MODEL_AMBIENT, this->ambientLight );
-
-  float position[ 4 ] = { 0.0f, 0.0f, 4.0f, 1.0f };
 
   QVector< QPointF > lights = this->board.getGhostStarts();
   QVector< QPointF >::const_iterator i;
 
   GLenum light = GL_LIGHT0;
   for ( i = lights.begin(); i != lights.end(); ++i ) {
-    position[ 0 ] = i->x();
-    position[ 1 ] = i->y();
-
-    glLightf( light, GL_LINEAR_ATTENUATION, 0.1f );
-    glLightf( light, GL_QUADRATIC_ATTENUATION, 0.1f );
-    glLightfv( light, GL_POSITION, position );
-    glLightfv( light, GL_DIFFUSE, this->ghostStartsDiffuse );
-    glLightfv( light, GL_SPECULAR, this->ghostStartsSpecular );
     glEnable( light );
+    this->ghostStartsLight.setPosition( i->x(), i->y(), 4.0f );
+    this->ghostStartsLight.updateGlState( light );
 
     ++light;
 
