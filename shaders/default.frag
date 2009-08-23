@@ -1,31 +1,43 @@
-
-uniform int  ghostsCount;
-uniform int  dotsCount;
+varying vec3 normal, lightDir, halfVec;
 uniform sampler2D tex;
 
-varying vec4 position;
-
 void main() {
-  vec4 textureColor = texture2D( tex, gl_TexCoord[ 0 ].st );
-  vec4 lightEffect = textureColor * gl_LightModel.ambient;
+  vec3 light, diffuse, ambient, globalAmbient, nNormal;
+  vec3 specular = vec3( 0.0, 0.0, 0.0 );
+  vec4 texel;
+  float NdotL, NdotHV;
 
-/*
-  for ( int i = 0; i < lightsCount; ++i ) {
-    vec4 vector = vec4( lightsPosition[ i ], 0.0 );
-    vector = vector * gl_ProjectionMatrix;
-    vector = position - vector;
-    float distance = length( vector );
-    if ( distance < 30.0 ) {
-      lightEffect = vec3( 1.0, 0.0, 0.0 );
-    }
+  nNormal = normalize( normal );
 
-    if ( i > 60 ) {
-      break;
-    }
+  NdotL = max( dot( nNormal, normalize( lightDir ) ), 0.0 );
+
+  ambient =
+    gl_FrontMaterial.ambient.rgb *
+    gl_LightSource[ 0 ].ambient.rgb;
+
+  globalAmbient =
+    gl_FrontMaterial.ambient.rgb *
+    gl_LightModel.ambient.rgb;
+
+  diffuse =
+    gl_FrontMaterial.diffuse.rgb *
+    gl_LightSource[ 0 ].diffuse.rgb *
+    NdotL;
+
+  if ( NdotL > 0.0001 ) {
+    NdotHV = max( dot( nNormal, normalize( halfVec.xyz ) ), 0.0 );
+
+    specular =
+      gl_FrontMaterial.specular.rgb *
+      gl_LightSource[ 0 ].specular.rgb *
+      pow( NdotHV, gl_FrontMaterial.shininess );
   }
-*/
-  lightEffect.r = 1.0;
 
-  gl_FragColor = lightEffect;
+
+  light = globalAmbient + ambient + diffuse + specular;
+
+  texel = texture2D( tex,gl_TexCoord[ 0 ].st );
+
+  gl_FragColor = vec4( texel.rgb * light, texel.a );
 }
 

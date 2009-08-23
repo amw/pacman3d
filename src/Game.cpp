@@ -247,10 +247,11 @@ void Game::prepareLights() {
   GLenum light = GL_LIGHT0;
   for ( i = lights.begin(); i != lights.end(); ++i ) {
     glEnable( light );
-    this->ghostStartsLight.setPosition( i->x(), i->y(), 4.0f );
+    this->ghostStartsLight.setDirection( 0.0f, 0.0f, 1.0f );
     this->ghostStartsLight.updateGlState( light );
 
     ++light;
+    break;
 
     if ( light - GL_LIGHT0 > 7 ) {
       break;
