@@ -51,7 +51,7 @@ bool GameBoard::initialize() {
   }
 
   this->wallMaterial.setSpecular( 1.0f, 1.0f, 1.0f );
-  this->wallMaterial.setShininess( 0.4f );
+  this->wallMaterial.setShininess( 20.0f );
 
   this->dotsMaterial.setSpecular( 1.0f, 1.0f, 1.0f );
   this->dotsMaterial.setShininess( 80.0f );
