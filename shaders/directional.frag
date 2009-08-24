@@ -25,7 +25,7 @@ void main() {
     NdotL;
 
   if ( NdotL > 0.0001 ) {
-    NdotHV = max( dot( nNormal, normalize( halfVec.xyz ) ), 0.0 );
+    NdotHV = max( dot( nNormal, normalize( halfVec ) ), 0.0 );
 
     specular =
       gl_FrontMaterial.specular.rgb *

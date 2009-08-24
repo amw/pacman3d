@@ -219,10 +219,10 @@ void Game::refreshCamera() {
 void Game::initializeShaders() {
   this->shaderProgram = new PipelineProgram();
   this->shaderProgram->attachShader(
-    GL_VERTEX_SHADER, "shaders/default.vert"
+    GL_VERTEX_SHADER, "shaders/both.vert"
   );
   this->shaderProgram->attachShader(
-    GL_FRAGMENT_SHADER, "shaders/default.frag"
+    GL_FRAGMENT_SHADER, "shaders/both.frag"
   );
   this->shaderProgram->link();
 }
@@ -247,7 +247,8 @@ void Game::prepareLights() {
   GLenum light = GL_LIGHT0;
   for ( i = lights.begin(); i != lights.end(); ++i ) {
     glEnable( light );
-    this->ghostStartsLight.setDirection( 0.0f, 0.0f, 1.0f );
+    this->ghostStartsLight.setPosition( i->x(), i->y(), 4.0f );
+    //this->ghostStartsLight.setDirection( 0.0f, 0.0f, 1.0f );
     this->ghostStartsLight.updateGlState( light );
 
     ++light;
