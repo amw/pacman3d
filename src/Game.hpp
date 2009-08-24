@@ -39,6 +39,7 @@ class Game : public QGLWidget {
     void initializeShaders();
     void initializeLights();
     void prepareLights();
+    int prepareMainLight( int light );
 
   private:
     GameBoard board;
@@ -47,6 +48,7 @@ class Game : public QGLWidget {
     bool shadersAreSupported;
     bool usingShaders;
     PipelineProgram * shaderProgram;
+    GLint lightsCountLocation;
 
     QTimer timer;
     bool needsRepaint;

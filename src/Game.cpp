@@ -225,6 +225,9 @@ void Game::initializeShaders() {
     GL_FRAGMENT_SHADER, "shaders/both.frag"
   );
   this->shaderProgram->link();
+
+  this->lightsCountLocation =
+    this->shaderProgram->getUniformLocation( "lightsCount" );
 }
 
 void Game::initializeLights() {
@@ -241,27 +244,39 @@ void Game::initializeLights() {
 void Game::prepareLights() {
   glLightModelfv( GL_LIGHT_MODEL_AMBIENT, this->ambientLight );
 
+  int light = 0;
+
+  light += this->prepareMainLight( light );
+
+  if ( this->usingShaders ) {
+    glUniform1i( this->lightsCountLocation, light );
+  }
+
+  while ( light < 8 ) {
+    glDisable( GL_LIGHT0 + light++ );
+  }
+}
+
+int Game::prepareMainLight( int light ) {
+  float mainLightX = 0.0f, mainLightY = 0.0f;
+
   QVector< QPointF > lights = this->board.getGhostStarts();
   QVector< QPointF >::const_iterator i;
 
-  GLenum light = GL_LIGHT0;
   for ( i = lights.begin(); i != lights.end(); ++i ) {
-    glEnable( light );
-    this->ghostStartsLight.setPosition( i->x(), i->y(), 4.0f );
-    //this->ghostStartsLight.setDirection( 0.0f, 0.0f, 1.0f );
-    this->ghostStartsLight.updateGlState( light );
-
-    ++light;
-    break;
-
-    if ( light - GL_LIGHT0 > 7 ) {
-      break;
-    }
+    mainLightX += i->x();
+    mainLightY += i->y();
   }
 
-  while ( light < GL_LIGHT0 + 8 ) {
-    glDisable( light++ );
-  }
+  mainLightX /= lights.size();
+  mainLightY /= lights.size();
+
+  glEnable( GL_LIGHT0 + light );
+  this->ghostStartsLight.setPosition( mainLightX, mainLightY, 4.0f );
+  //this->ghostStartsLight.setDirection( 0.0f, 0.0f, 1.0f );
+  this->ghostStartsLight.updateGlState( GL_LIGHT0 + light );
+
+  return 1;
 }
 
 void Game::keyPressEvent( QKeyEvent* event ) {
