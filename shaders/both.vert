@@ -12,7 +12,6 @@ void main() {
     // directional light
 
     lightDir = normalize( gl_LightSource[ 0 ].position.xyz );
-    distance = 0.0;
   }
   else {
     // positional light
