@@ -97,7 +97,6 @@ void Game::initializeGL() {
 }
 
 void Game::resizeGL( int width, int height ) {
-  glMatrixMode( GL_MODELVIEW );
   glViewport( 0, 0, width, height );
 
   this->aspectRatio = (double) width / (double) height;
@@ -107,6 +106,7 @@ void Game::resizeGL( int width, int height ) {
 
   gluPerspective( FOVY, this->aspectRatio, 0.5f, 50.0f );
 
+  glMatrixMode( GL_MODELVIEW );
   this->needsRepaint = true;
 }
 
