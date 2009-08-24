@@ -210,14 +210,19 @@ void GameBoard::initializeGL( QGLWidget & target ) {
           this->addWallBlock( x, y );
         }
         else if ( GameBoard::Path == this->blocks[ y ][ x ] ) {
+          this->addGrassBlock( x, y );
         }
         else if ( GameBoard::Dot == this->blocks[ y ][ x ] ) {
+          this->addGrassBlock( x, y );
         }
         else if ( GameBoard::Powerup == this->blocks[ y ][ x ] ) {
+          this->addGrassBlock( x, y );
         }
         else if ( GameBoard::Teleport1 == this->blocks[ y ][ x ] ) {
+          this->addGrassBlock( x, y );
         }
         else if ( GameBoard::PlayerStart == this->blocks[ y ][ x ] ) {
+          this->addGrassBlock( x, y );
         }
         else if ( GameBoard::PlayerWall == this->blocks[ y ][ x ] ) {
           this->addFloorBlock( x, y, this->roofTexture, this->defaultMaterial );
@@ -229,7 +234,6 @@ void GameBoard::initializeGL( QGLWidget & target ) {
         }
       }
     }
-    this->addGrass();
   }
   glEndList();
 
@@ -301,24 +305,29 @@ void GameBoard::addWallBlock( int x, int y ) {
   glEnd();
 }
 
-void GameBoard::addGrass() {
-  double x1 = 0.0f;
-  double x2 = this->width * BLOCK_WIDTH;
+void GameBoard::addGrassBlock( int x, int y ) {
+  double x1 = BLOCK_WIDTH * x;
+  double x2 = x1 + BLOCK_WIDTH;
 
-  double y1 = 0.0f;
-  double y2 = this->height * BLOCK_WIDTH;
+  double y1 = BLOCK_WIDTH * y;
+  double y2 = y1 + BLOCK_WIDTH;
 
-  double z2 = -0.005f;
+  double z2 = 0.0f;
+
+  double s1 = (double) x         / (double) this->width  * 4.0f;
+  double s2 = (double) ( x + 1 ) / (double) this->width  * 4.0f;
+  double t1 = (double) y         / (double) this->height * 4.0f;
+  double t2 = (double) ( y + 1 ) / (double) this->height * 4.0f;
 
   glBindTexture( GL_TEXTURE_2D, this->grassTexture );
   this->grassMaterial.updateGlState( Material::Front );
   glBegin( GL_QUADS );
   {
     glNormal3f( 0.0f, 0.0f, 1.0f );
-    glTexCoord2f( 0.0f, 0.0f ); glVertex3d( x1, y1, z2 );
-    glTexCoord2f( 4.0f, 0.0f ); glVertex3d( x2, y1, z2 );
-    glTexCoord2f( 4.0f, 4.0f ); glVertex3d( x2, y2, z2 );
-    glTexCoord2f( 0.0f, 4.0f ); glVertex3d( x1, y2, z2 );
+    glTexCoord2f( s1, t1 ); glVertex3d( x1, y1, z2 );
+    glTexCoord2f( s2, t1 ); glVertex3d( x2, y1, z2 );
+    glTexCoord2f( s2, t2 ); glVertex3d( x2, y2, z2 );
+    glTexCoord2f( s1, t2 ); glVertex3d( x1, y2, z2 );
   }
   glEnd();
 }

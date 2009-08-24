@@ -41,7 +41,7 @@ class GameBoard : public QObject {
     void initBlocksToWalls();
     bool readBoardBlocks( QFile & map );
     void addWallBlock( int x, int y );
-    void addGrass();
+    void addGrassBlock( int x, int y );
     void addFloorBlock(
       int x, int y, GLuint texture, const Material & material
     );
