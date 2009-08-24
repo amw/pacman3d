@@ -1,5 +1,4 @@
 varying vec3 normal, lightDir, reflection, viewer;
-varying vec3 globalAmbient, ambient, diffuse, specular;
 varying float distance;
 
 void main() {
@@ -25,11 +24,5 @@ void main() {
 
   reflection = normalize( reflect( lightDir, normal ) );
   viewer = normalize( vertexPosition.xyz );
-
-  globalAmbient = gl_FrontMaterial.ambient.rgb * gl_LightModel.ambient.rgb;
-  ambient = gl_FrontMaterial.ambient.rgb * gl_LightSource[ 0 ].ambient.rgb;
-  diffuse = gl_FrontMaterial.diffuse.rgb * gl_LightSource[ 0 ].diffuse.rgb;
-  specular = gl_FrontMaterial.specular.rgb * gl_LightSource[ 0 ].specular.rgb;
-
 }
 
