@@ -1,4 +1,4 @@
-varying vec3 normal, halfVec, lightDir;
+varying vec3 normal, lightDir, reflection, viewer;
 varying vec3 globalAmbient, ambient, diffuse, specular;
 varying float distance;
 uniform sampler2D tex;
@@ -6,7 +6,7 @@ uniform sampler2D tex;
 void main() {
   vec3 light, nNormal;
   vec4 texel;
-  float NdotL, NdotHV, attenuation;
+  float NdotL, RdotV, attenuation;
 
   nNormal = normalize( normal );
   NdotL = max( dot( nNormal, normalize( lightDir ) ), 0.0 );
@@ -19,11 +19,16 @@ void main() {
     light += ambient;
 
     if ( NdotL > 0.00001 ) {
-      NdotHV = max( dot( nNormal, normalize( halfVec ) ), 0.0 );
+      light += diffuse * NdotL;
 
-      light +=
-        diffuse * NdotL +
-        specular * pow( NdotHV, gl_FrontMaterial.shininess );
+      if ( gl_FrontMaterial.shininess > 0.00001 ) {
+        RdotV = dot( normalize( reflection ), normalize( viewer ) );
+        RdotV = max( RdotV, 0.0 );
+
+        light +=
+          diffuse * NdotL +
+          specular * pow( RdotV, gl_FrontMaterial.shininess );
+      }
     }
   }
   else {
@@ -35,18 +40,27 @@ void main() {
       gl_LightSource[ 0 ].quadraticAttenuation * distance * distance );
 
     if ( NdotL > 0.00001 ) {
-      NdotHV = max( dot( nNormal, normalize( halfVec ) ), 0.0 );
+      if ( gl_FrontMaterial.shininess > 0.00001 ) {
+        RdotV = dot( normalize( reflection ), normalize( viewer ) );
+        RdotV = max( RdotV, 0.0 );
 
-      light += attenuation * (
-        ambient +
-        diffuse * NdotL +
-        specular * pow( NdotHV, gl_FrontMaterial.shininess ) );
+        light += attenuation * (
+          ambient +
+          diffuse * NdotL +
+          specular * pow( RdotV, gl_FrontMaterial.shininess )
+        );
+      }
+      else {
+        light += attenuation * (
+          ambient +
+          diffuse * NdotL
+        );
+      }
     }
     else {
       light += attenuation * ambient;
     }
   }
-
 
   texel = texture2D( tex,gl_TexCoord[ 0 ].st );
 
