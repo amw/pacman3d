@@ -25,6 +25,7 @@ bool GameWindow::initialize() {
     return false;
   }
 
+  this->game->setFocus( Qt::ActiveWindowFocusReason );
   this->show();
   this->raise();
   this->activateWindow();
@@ -36,6 +37,7 @@ bool GameWindow::initialize() {
 
 void GameWindow::keyPressEvent( QKeyEvent* event ) {
   if ( event->key() == Qt::Key_F ) {
+    this->game->clearFocus();
     if ( this->isFullScreen() ) {
       this->showNormal();
       this->setContentsMargins( -20, -20, -20, -5 );
@@ -45,6 +47,7 @@ void GameWindow::keyPressEvent( QKeyEvent* event ) {
       this->showFullScreen();
       this->setContentsMargins( -20, -20, -20, -20 );
     }
+    this->game->setFocus( Qt::ActiveWindowFocusReason );
 
     event->accept();
     return;
