@@ -35,15 +35,43 @@ void MovingObject::setVelocity( double velocity, int timeStep ) {
 }
 
 bool MovingObject::testMovement( double posX, double posY ) {
-  posX += this->direction.x() * 0.5f;
-  posY += this->direction.y() * 0.5f;
-
+  // can access target block?
   if ( ! this->canAccess( posX, posY ) ) {
     return false;
   }
-  else {
-    return true;
+
+  // can access every block on the path?
+  if ( posX > this->position.x() ) {
+    for ( double x = this->position.x() + 1.0f; x < posX; x += 1.0f ) {
+      if ( ! this->canAccess( x, this->position.y() ) ) {
+        return false;
+      }
+    }
   }
+  else if ( posX < this->position.x() ) {
+    for ( double x = this->position.x() - 1.0f; x > posX; x -= 1.0f ) {
+      if ( ! this->canAccess( x, this->position.y() ) ) {
+        return false;
+      }
+    }
+  }
+
+  if ( posY > this->position.y() ) {
+    for ( double y = this->position.y() + 1.0f; y < posY; y += 1.0f ) {
+      if ( ! this->canAccess( y, this->position.y() ) ) {
+        return false;
+      }
+    }
+  }
+  else if ( posY < this->position.y() ) {
+    for ( double y = this->position.y() - 1.0f; y > posY; y -= 1.0f ) {
+      if ( ! this->canAccess( y, this->position.y() ) ) {
+        return false;
+      }
+    }
+  }
+
+  return true;
 }
 
 void MovingObject::updatePosition( int timeStep ) {
@@ -59,7 +87,10 @@ void MovingObject::updatePosition( int timeStep ) {
   newX += this->direction.x() * this->velocity * timeFactor;
   newY += this->direction.y() * this->velocity * timeFactor;
 
-  if ( ! this->testMovement( newX, newY ) ) {
+  if ( ! this->testMovement(
+      newX + this->direction.x() * 0.5f,
+      newY + this->direction.y() * 0.5f
+  ) ) {
     // if you can't move, center at current block
     newX = this->alignToCenter( this->position.x() );
     newY = this->alignToCenter( this->position.y() );
@@ -94,7 +125,6 @@ void MovingObject::testIfAtBlockCenter() {
   atYCenter = fabs( atYCenter - 0.5f );
 
   if ( CENTER_ATTRACTION > atXCenter && CENTER_ATTRACTION > atYCenter ) {
-    QPoint currentBlock( this->position.x(), this->position.y() );
     this->atBlockCenter();
   }
 }
