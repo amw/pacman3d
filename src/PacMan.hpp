@@ -16,6 +16,9 @@ class PacMan : public MovingObject {
     void render( QGLWidget & target );
     void setDesiredDirection( QPoint direction );
 
+  signals:
+    void collectedPoint();
+
   protected:
     virtual bool canAccess( int x, int y );
     virtual bool crossingBlockCenter( int timeStep, QPointF newPosition );

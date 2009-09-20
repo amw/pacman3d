@@ -65,6 +65,10 @@ void PacMan::setDesiredDirection( QPoint direction ) {
 }
 
 bool PacMan::crossingBlockCenter( int, QPointF newPosition ) {
+  if ( this->board->collectPoint( this->position.x(), this->position.y() ) ) {
+    emit this->collectedPoint();
+  }
+
   if ( this->desiredDirection.isNull() ) {
     return false;
   }

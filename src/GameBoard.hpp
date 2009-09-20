@@ -32,9 +32,9 @@ class GameBoard : public QObject {
     QPointF getRealSize() const;
     QPointF getPlayer1Start() const;
     QVector< QPointF > getGhostStarts() const;
-    QVector< QPointF > getPacDots() const;
     bool isAccessibleByPlayer( int x, int y ) const;
     bool isAccessibleByGhost( int x, int y ) const;
+    bool collectPoint( int x, int y );
 
   private:
     bool readBoardSize( QFile & map );
@@ -45,7 +45,6 @@ class GameBoard : public QObject {
     void addFloorBlock(
       int x, int y, GLuint texture, const Material & material
     );
-    void addPacDot( int x, int y );
 
   private:
     QString name;
@@ -55,7 +54,7 @@ class GameBoard : public QObject {
     bool allocatedBlocks;
     QPointF player1Start;
     QVector< QPointF > ghostStarts;
-    QVector< QPointF > pacDots;
+    QList< QPointF > pacDots;
 
     Material grassMaterial;
     Material wallMaterial;

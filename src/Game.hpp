@@ -28,6 +28,9 @@ class Game : public QGLWidget {
     bool initialize();
     void start();
 
+  public slots:
+    void playerCollectedPoint();
+
   protected:
     void initializeGL();
     void resizeGL( int w, int h );
@@ -47,6 +50,7 @@ class Game : public QGLWidget {
     GameBoard board;
     PacMan hero;
     Ghost* ghosts[ GHOSTS_COUNT ];
+    int points;
 
     bool shadersAreSupported;
     bool usingShaders;

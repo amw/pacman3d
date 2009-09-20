@@ -23,6 +23,11 @@ Game::Game( QWidget* parent )
 {
   this->initializeLights();
 
+  connect(
+    &this->hero, SIGNAL( collectedPoint() ),
+    this, SLOT( playerCollectedPoint() )
+  );
+
   this->ghosts[ 0 ] = new Ghost( & this->board, 1.0f, 0.0f, 0.0f );
   this->ghosts[ 1 ] = new Ghost( & this->board, 0.9f, 0.5f, 0.9f );
   this->ghosts[ 2 ] = new Ghost( & this->board, 0.0f, 1.0f, 1.0f );
@@ -307,6 +312,10 @@ int Game::prepareMainLight( int light ) {
   this->ghostStartsLight.updateGlState( GL_LIGHT0 + light );
 
   return 1;
+}
+
+void Game::playerCollectedPoint() {
+  qDebug() << "Points:" << ++this->points;
 }
 
 void Game::keyPressEvent( QKeyEvent* event ) {

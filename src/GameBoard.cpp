@@ -362,7 +362,7 @@ void GameBoard::addFloorBlock(
 void GameBoard::render( QGLWidget & ) {
   glCallList( this->staticList );
 
-  QVector< QPointF >::const_iterator i;
+  QList< QPointF >::const_iterator i;
 
   for ( i = this->pacDots.begin(); i != this->pacDots.end(); ++i ) {
     glPushMatrix();
@@ -389,19 +389,31 @@ QVector< QPointF > GameBoard::getGhostStarts() const {
   return this->ghostStarts;
 }
 
-QVector< QPointF > GameBoard::getPacDots() const {
-  return this->pacDots;
-}
-
 bool GameBoard::isAccessibleByGhost( int x, int y ) const {
-  if (
-    this->blocks[ y ][ x ] != GameBoard::Wall
-  ) {
+  if ( this->blocks[ y ][ x ] != GameBoard::Wall ) {
     return true;
   }
   else {
     return false;
   }
+}
+
+bool GameBoard::collectPoint( int x, int y ) {
+  if ( GameBoard::Dot != this->blocks[ y ][ x ] ) {
+    return false;
+  }
+
+  this->blocks[ y ][ x ] = GameBoard::UsedDot;
+
+  QList< QPointF >::iterator i;
+  for ( i = this->pacDots.begin(); i != this->pacDots.end(); ++i ) {
+    if ( (int) i->x() == x && (int) i->y() == y ) {
+      this->pacDots.erase( i );
+      break;
+    }
+  }
+
+  return true;
 }
 
 bool GameBoard::isAccessibleByPlayer( int x, int y ) const {
