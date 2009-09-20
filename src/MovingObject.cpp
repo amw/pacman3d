@@ -1,6 +1,7 @@
 #include "MovingObject.hpp"
 #include <math.h>
 
+#define MIN( v1, v2 ) ( ( v2 < v1 ) ? v2 : v1 )
 
 MovingObject::MovingObject( GameBoard * board ) :
   board( board ),
@@ -34,7 +35,11 @@ void MovingObject::setVelocity( double velocity, int timeStep ) {
   this->velocity = velocity;
 }
 
-bool MovingObject::testMovement( double posX, double posY ) {
+bool MovingObject::testMovement( QPointF newPosition ) {
+  newPosition += QPointF( this->direction ) * 0.5f;
+  double posX = newPosition.x();
+  double posY = newPosition.y();
+
   // can access target block?
   if ( ! this->canAccess( posX, posY ) ) {
     return false;
@@ -79,27 +84,42 @@ void MovingObject::updatePosition( int timeStep ) {
     return;
   }
 
-  double timeFactor = timeStep / 1000.0f;
-
-  double newX = this->position.x();
-  double newY = this->position.y();
-
-  newX += this->direction.x() * this->velocity * timeFactor;
-  newY += this->direction.y() * this->velocity * timeFactor;
-
-  if ( ! this->testMovement(
-      newX + this->direction.x() * 0.5f,
-      newY + this->direction.y() * 0.5f
-  ) ) {
-    // if you can't move, center at current block
-    newX = this->alignToCenter( this->position.x() );
-    newY = this->alignToCenter( this->position.y() );
+  if ( this->direction.isNull() ) {
+    return;
   }
 
-  this->position.setX( newX );
-  this->position.setY( newY );
+  double timeFactor = timeStep / 1000.0f;
 
-  this->testIfAtBlockCenter();
+  QPointF newPosition( this->direction );
+  newPosition *= this->velocity * timeFactor;
+  newPosition += this->position;
+
+  int oldXHalfBlock = this->position.x() / 0.5f;
+  int oldYHalfBlock = this->position.y() / 0.5f;
+  int newXHalfBlock = newPosition.x() / 0.5f;
+  int newYHalfBlock = newPosition.y() / 0.5f;
+
+  bool crossingX =
+    oldXHalfBlock != newXHalfBlock &&
+    ( MIN( oldXHalfBlock, newXHalfBlock ) % 2 ) == 0;
+  bool crossingY =
+    oldYHalfBlock != newYHalfBlock &&
+    ( MIN( oldYHalfBlock, newYHalfBlock ) % 2 ) == 0;
+
+  if ( crossingX || crossingY ) {
+    if ( this->crossingBlockCenter( timeStep, newPosition ) ) {
+      return;
+    }
+  }
+
+  if ( ! this->testMovement( newPosition ) ) {
+    // if you can't move, center at current block
+    newPosition.setX( this->alignToCenter( this->position.x() ) );
+    newPosition.setY( this->alignToCenter( this->position.y() ) );
+    this->direction = QPoint();
+  }
+
+  this->position = newPosition;
 }
 
 double MovingObject::alignToCenter( double position ) {
@@ -115,17 +135,5 @@ double MovingObject::alignToCenter( double position ) {
     }
   }
   return newPos;
-}
-
-void MovingObject::testIfAtBlockCenter() {
-  double atXCenter = this->position.x() - (int) this->position.x();
-  double atYCenter = this->position.y() - (int) this->position.y();
-
-  atXCenter = fabs( atXCenter - 0.5f );
-  atYCenter = fabs( atYCenter - 0.5f );
-
-  if ( CENTER_ATTRACTION > atXCenter && CENTER_ATTRACTION > atYCenter ) {
-    this->atBlockCenter();
-  }
 }
 

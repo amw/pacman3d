@@ -61,23 +61,40 @@ void PacMan::setDesiredDirection( QPoint direction ) {
     this->direction = direction;
     this->desiredDirection = QPoint();
   }
+  else if ( this->direction.isNull() ) {
+    this->direction = direction;
+    this->desiredDirection = QPoint();
+  }
   else {
     this->desiredDirection = direction;
   }
 }
 
-void PacMan::atBlockCenter() {
+bool PacMan::crossingBlockCenter( int timeStep, QPointF newPosition ) {
   if ( this->desiredDirection.isNull() ) {
-    return;
+    return false;
   }
 
-  QPointF testPosition = this->position + this->desiredDirection;
-  if ( this->canAccess( testPosition.x(), testPosition.y() ) ) {
-    this->position.setX( this->alignToCenter( this->position.x() ) );
-    this->position.setY( this->alignToCenter( this->position.y() ) );
+  QPointF center(
+    this->alignToCenter( newPosition.x() ),
+    this->alignToCenter( newPosition.y() )
+  );
 
+  QPointF testPosition = center + this->desiredDirection;
+  if ( this->canAccess( testPosition.x(), testPosition.y() ) ) {
     this->direction = this->desiredDirection;
     this->desiredDirection = QPoint();
+
+    QPointF difference = newPosition - center;
+    double dX = fabs( difference.x() );
+    double dY = fabs( difference.y() );
+    double distance = fmax( dX, dY );
+
+    this->position = center + QPointF( this->direction ) * distance;
+
+    return true;
   }
+
+  return false;
 }
 

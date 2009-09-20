@@ -8,7 +8,6 @@
 #include <QTime>
 
 #define MINIMUM_VELOCITY 0.05f
-#define CENTER_ATTRACTION 0.15f
 
 class MovingObject : public QObject {
   Q_OBJECT
@@ -26,11 +25,10 @@ class MovingObject : public QObject {
   protected:
     double alignToCenter( double position );
     virtual bool canAccess( int x, int y ) = 0;
-    virtual void atBlockCenter() = 0;
+    virtual bool crossingBlockCenter( int timeStep, QPointF newPosition ) = 0;
 
   private:
-    bool testMovement( double posX, double posY );
-    void testIfAtBlockCenter();
+    bool testMovement( QPointF newPosition );
 
   protected:
     GameBoard * board;
