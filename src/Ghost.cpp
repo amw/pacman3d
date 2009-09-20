@@ -30,7 +30,7 @@ void Ghost::initializeGL( QGLWidget & target ) {
     glBindTexture( GL_TEXTURE_2D, this->ghostTexture );
     this->material.updateGlState( Material::Front );
     glRotatef( 180, 1.0f, 0.0f, 0.0f );
-    gluSphere( this->sphereQuadric, 0.4f, 360 / 5, 180 / 5 );
+    gluSphere( this->sphereQuadric, 0.3f, 360 / 5, 180 / 5 );
   }
   glEndList();
 }
