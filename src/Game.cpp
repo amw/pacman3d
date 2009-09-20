@@ -58,6 +58,9 @@ bool Game::initialize() {
     return false;
   }
 
+  this->lifes = 3;
+  this->points = 0;
+
   this->hero.setPosition( this->board.getPlayer1Start() );
   this->hero.setVelocity( 3.0f, 0 );
 
@@ -69,6 +72,8 @@ bool Game::initialize() {
     this->ghosts[ i ]->setVelocity( 3.0f, 0 );
     this->ghosts[ i ]->setDirection( this->ghosts[ i ]->getNewDirection(), 0 );
   }
+
+  this->lastPlayerDeath = QTime::currentTime().addSecs( -60 );
 
   return true;
 }
@@ -187,7 +192,17 @@ void Game::paintFrame( int timeStep ) {
     this->ghosts[ i ]->updatePosition( timeStep );
 
     if ( this->ghosts[ i ]->collidesWith( this->hero ) ) {
-      qDebug() << "Die!";
+      if ( this->lastPlayerDeath.elapsed() > INVULNERABILITY_TIME ) {
+        this->lastPlayerDeath.restart();
+        this->hero.setPosition( this->board.getPlayer1Start() );
+        if ( --this->lifes < 0 ) {
+          qDebug() << "Game over.";
+          QCoreApplication::exit( 0 );
+        }
+        else {
+          qDebug() << "You have" << this->lifes << "lives left.";
+        }
+      }
     }
   }
 
@@ -200,7 +215,23 @@ void Game::paintFrame( int timeStep ) {
   this->prepareLights();
 
   this->board.render( *this );
-  this->hero.render( *this );
+
+  int sinceDeath = this->lastPlayerDeath.elapsed();
+  if ( sinceDeath < INVULNERABILITY_TIME ) {
+    int divider = 400;
+    if ( sinceDeath > INVULNERABILITY_TIME * 0.66f ) {
+      divider = 200;
+    }
+
+    sinceDeath /= divider;
+    if ( ! ( sinceDeath % 2 ) ) {
+      this->hero.render( *this );
+    }
+  }
+  else {
+    this->hero.render( *this );
+  }
+
   for ( int i = 0; i < GHOSTS_COUNT; ++i ) {
     this->ghosts[ i ]->render( *this );
   }
@@ -319,7 +350,7 @@ int Game::prepareMainLight( int light ) {
 }
 
 void Game::playerCollectedPoint() {
-  qDebug() << "Points:" << ++this->points;
+  ++this->points;
 }
 
 void Game::keyPressEvent( QKeyEvent* event ) {

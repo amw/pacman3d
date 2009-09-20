@@ -13,6 +13,7 @@
 #define FOVY 45.0f
 #define MS_TO_REPORT_FPS 1000
 #define GHOSTS_COUNT 4
+#define INVULNERABILITY_TIME 3500
 
 class QKeyEvent;
 
@@ -50,6 +51,7 @@ class Game : public QGLWidget {
     GameBoard board;
     PacMan hero;
     Ghost* ghosts[ GHOSTS_COUNT ];
+    int lifes;
     int points;
 
     bool shadersAreSupported;
@@ -63,6 +65,7 @@ class Game : public QGLWidget {
     int motionBlurFrames;
     QTime lastFrame;
     QTime lastFpsReport;
+    QTime lastPlayerDeath;
     int framesRenderedSinceLastReport;
 
     QColor background;
