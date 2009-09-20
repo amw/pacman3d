@@ -1,12 +1,6 @@
 #include "PacMan.hpp"
 
 
-struct XYZ {
-  double x;
-  double y;
-  double z;
-};
-
 PacMan::PacMan( GameBoard * board )
   : MovingObject( board )
 {
@@ -70,7 +64,7 @@ void PacMan::setDesiredDirection( QPoint direction ) {
   }
 }
 
-bool PacMan::crossingBlockCenter( int timeStep, QPointF newPosition ) {
+bool PacMan::crossingBlockCenter( int, QPointF newPosition ) {
   if ( this->desiredDirection.isNull() ) {
     return false;
   }
