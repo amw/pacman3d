@@ -21,6 +21,7 @@ class MovingObject : public QObject {
     void setDirection( QPoint direction, int timeStep );
     void setVelocity( double velocity, int timeStep );
     void updatePosition( int timeStep );
+    bool collidesWith( const MovingObject & obj );
 
   protected:
     double alignToCenter( double position );
@@ -35,6 +36,7 @@ class MovingObject : public QObject {
     QPointF position;
     QPoint direction;
     double velocity;
+    double radius;
 };
 
 #endif

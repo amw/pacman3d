@@ -183,8 +183,12 @@ void Game::paintWithMotionBlur( int timeStep ) {
 
 void Game::paintFrame( int timeStep ) {
   this->hero.updatePosition( timeStep );
-  for ( int i; i < GHOSTS_COUNT; ++i ) {
+  for ( int i = 0; i < GHOSTS_COUNT; ++i ) {
     this->ghosts[ i ]->updatePosition( timeStep );
+
+    if ( this->ghosts[ i ]->collidesWith( this->hero ) ) {
+      qDebug() << "Die!";
+    }
   }
 
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );

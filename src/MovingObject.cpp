@@ -5,7 +5,8 @@
 
 MovingObject::MovingObject( GameBoard * board ) :
   board( board ),
-  velocity( 0.0f )
+  velocity( 0.0f ),
+  radius( 0.0f )
 {
 }
 
@@ -124,6 +125,20 @@ void MovingObject::updatePosition( int timeStep ) {
   }
 
   this->position = newPosition;
+}
+
+bool MovingObject::collidesWith( const MovingObject& obj ) {
+  QPointF v = this->position - obj.position;
+  double distance = v.x() * v.x() + v.y() * v.y();
+  double radiuses = this->radius + obj.radius;
+  radiuses *= radiuses;
+
+  if ( radiuses > distance ) {
+    return true;
+  }
+  else {
+    return false;
+  }
 }
 
 double MovingObject::alignToCenter( double position ) {

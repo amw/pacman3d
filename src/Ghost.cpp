@@ -4,6 +4,8 @@
 Ghost::Ghost( GameBoard * board, double r, double g, double b )
   : MovingObject( board )
 {
+  this->radius = 0.3f;
+
   this->light.setDiffuse( 3.0f * r, 3.0f * g, 3.0f * b );
   this->light.setSpecular( 3.0f * r, 3.0f * g, 3.0f * b );
   this->light.setAttenuation( 1.0f, 1.0f, 3.0f );
@@ -30,7 +32,7 @@ void Ghost::initializeGL( QGLWidget & target ) {
     glBindTexture( GL_TEXTURE_2D, this->ghostTexture );
     this->material.updateGlState( Material::Front );
     glRotatef( 180, 1.0f, 0.0f, 0.0f );
-    gluSphere( this->sphereQuadric, 0.3f, 360 / 5, 180 / 5 );
+    gluSphere( this->sphereQuadric, this->radius, 360 / 5, 180 / 5 );
   }
   glEndList();
 }
