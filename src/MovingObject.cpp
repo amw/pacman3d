@@ -26,6 +26,10 @@ void MovingObject::setPosition( QPointF position ) {
 }
 
 void MovingObject::setDirection( QPoint direction, int timeStep ) {
+  if ( this->direction == direction ) {
+    return;
+  }
+
   this->updatePosition( timeStep );
   this->direction = direction;
 }

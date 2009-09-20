@@ -3,6 +3,7 @@
 
 #include "GameBoard.hpp"
 #include "PacMan.hpp"
+#include "Ghost.hpp"
 #include "Light.hpp"
 #include "PipelineProgram.hpp"
 #include <QGLWidget>
@@ -44,6 +45,7 @@ class Game : public QGLWidget {
   private:
     GameBoard board;
     PacMan hero;
+    Ghost* ghosts[ 3 ];
 
     bool shadersAreSupported;
     bool usingShaders;

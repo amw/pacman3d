@@ -23,12 +23,19 @@ Game::Game( QWidget* parent )
 {
   this->initializeLights();
 
+  this->ghosts[ 0 ] = new Ghost( & this->board, 1.0f, 0.0f, 0.0f );
+  this->ghosts[ 1 ] = new Ghost( & this->board, 1.0f, 1.0f, 0.0f );
+  this->ghosts[ 2 ] = new Ghost( & this->board, 0.0f, 1.0f, 1.0f );
+
   this->timer.setSingleShot( true );
   connect( & this->timer, SIGNAL( timeout() ), this, SLOT( updateGL() ) );
 }
 
 Game::~Game() {
   this->makeCurrent();
+  for ( int i = 0; i < 3; ++i) {
+    delete this->ghosts[ i ];
+  }
   delete this->shaderProgram;
 }
 
@@ -47,6 +54,12 @@ bool Game::initialize() {
 
   this->hero.setPosition( this->board.getPlayer1Start() );
   this->hero.setVelocity( 3.0f, 0 );
+
+  for ( int i = 0; i < 3; ++i ) {
+    this->ghosts[ i ]->setPosition( this->board.getGhostStarts().at( i ) );
+    this->ghosts[ i ]->setVelocity( 3.0f, 0 );
+    this->ghosts[ i ]->setDirection( this->ghosts[ i ]->getNewDirection(), 0 );
+  }
 
   return true;
 }
@@ -94,6 +107,9 @@ void Game::initializeGL() {
 
   this->board.initializeGL( *this );
   this->hero.initializeGL( *this );
+  for ( int i = 0; i < 3; ++i ) {
+    this->ghosts[ i ]->initializeGL( *this );
+  }
 }
 
 void Game::resizeGL( int width, int height ) {
@@ -158,6 +174,9 @@ void Game::paintWithMotionBlur( int timeStep ) {
 
 void Game::paintFrame( int timeStep ) {
   this->hero.updatePosition( timeStep );
+  for ( int i; i < 3; ++i ) {
+    this->ghosts[ i ]->updatePosition( timeStep );
+  }
 
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
@@ -169,6 +188,9 @@ void Game::paintFrame( int timeStep ) {
 
   this->board.render( *this );
   this->hero.render( *this );
+  for ( int i = 0; i < 3; ++i ) {
+    this->ghosts[ i ]->render( *this );
+  }
 }
 
 void Game::printFpsReport() {
@@ -247,6 +269,10 @@ void Game::prepareLights() {
   int light = 0;
 
   light += this->prepareMainLight( light );
+
+  for ( int i = 0; i < 3; ++i ) {
+    this->ghosts[ i ]->updateGlLight( GL_LIGHT0 + light++ );
+  }
 
   if ( this->usingShaders ) {
     glUniform1i( this->lightsCountLocation, light );
