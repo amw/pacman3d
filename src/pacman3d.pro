@@ -12,6 +12,9 @@ CONFIG += warn_on
 
 LIBS += -lGLEW
 
+QMAKE_CXXFLAGS_RELEASE += -Wall -g0 -O3
+QMAKE_CXXFLAGS_DEBUG   += -Wall -ggdb -O0
+
 macx {
   CONFIG -= app_bundle
   INCLUDEPATH += /opt/local/include
