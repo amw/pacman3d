@@ -8,7 +8,7 @@ Ghost::Ghost( GameBoard * board, double r, double g, double b )
   this->light.setSpecular( 3.0f * r, 3.0f * g, 3.0f * b );
   this->light.setAttenuation( 1.0f, 1.0f, 3.0f );
 
-  this->material.setSpecular( r, g, b );
+  this->material.setEmission( r, g, b );
   this->material.setShininess( 30.0f );
 }
 
