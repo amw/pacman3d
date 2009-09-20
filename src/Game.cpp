@@ -23,6 +23,9 @@ Game::Game( QWidget* parent )
 {
   this->initializeLights();
 
+  QTime midnight( 0, 0 );
+  qsrand( midnight.msecsTo( QTime::currentTime() ) );
+
   connect(
     &this->hero, SIGNAL( collectedPoint() ),
     this, SLOT( playerCollectedPoint() )
