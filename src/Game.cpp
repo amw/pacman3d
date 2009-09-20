@@ -24,8 +24,9 @@ Game::Game( QWidget* parent )
   this->initializeLights();
 
   this->ghosts[ 0 ] = new Ghost( & this->board, 1.0f, 0.0f, 0.0f );
-  this->ghosts[ 1 ] = new Ghost( & this->board, 1.0f, 1.0f, 0.0f );
+  this->ghosts[ 1 ] = new Ghost( & this->board, 0.9f, 0.5f, 0.9f );
   this->ghosts[ 2 ] = new Ghost( & this->board, 0.0f, 1.0f, 1.0f );
+  this->ghosts[ 3 ] = new Ghost( & this->board, 1.0f, 1.0f, 0.0f );
 
   this->timer.setSingleShot( true );
   connect( & this->timer, SIGNAL( timeout() ), this, SLOT( updateGL() ) );
@@ -33,7 +34,7 @@ Game::Game( QWidget* parent )
 
 Game::~Game() {
   this->makeCurrent();
-  for ( int i = 0; i < 3; ++i) {
+  for ( int i = 0; i < GHOSTS_COUNT; ++i) {
     delete this->ghosts[ i ];
   }
   delete this->shaderProgram;
@@ -55,8 +56,11 @@ bool Game::initialize() {
   this->hero.setPosition( this->board.getPlayer1Start() );
   this->hero.setVelocity( 3.0f, 0 );
 
-  for ( int i = 0; i < 3; ++i ) {
-    this->ghosts[ i ]->setPosition( this->board.getGhostStarts().at( i ) );
+  int ghostStartCount = this->board.getGhostStarts().size();
+
+  for ( int i = 0; i < GHOSTS_COUNT; ++i ) {
+    QPointF startPos = this->board.getGhostStarts().at( i % ghostStartCount );
+    this->ghosts[ i ]->setPosition( startPos );
     this->ghosts[ i ]->setVelocity( 3.0f, 0 );
     this->ghosts[ i ]->setDirection( this->ghosts[ i ]->getNewDirection(), 0 );
   }
@@ -107,7 +111,7 @@ void Game::initializeGL() {
 
   this->board.initializeGL( *this );
   this->hero.initializeGL( *this );
-  for ( int i = 0; i < 3; ++i ) {
+  for ( int i = 0; i < GHOSTS_COUNT; ++i ) {
     this->ghosts[ i ]->initializeGL( *this );
   }
 }
@@ -174,7 +178,7 @@ void Game::paintWithMotionBlur( int timeStep ) {
 
 void Game::paintFrame( int timeStep ) {
   this->hero.updatePosition( timeStep );
-  for ( int i; i < 3; ++i ) {
+  for ( int i; i < GHOSTS_COUNT; ++i ) {
     this->ghosts[ i ]->updatePosition( timeStep );
   }
 
@@ -188,7 +192,7 @@ void Game::paintFrame( int timeStep ) {
 
   this->board.render( *this );
   this->hero.render( *this );
-  for ( int i = 0; i < 3; ++i ) {
+  for ( int i = 0; i < GHOSTS_COUNT; ++i ) {
     this->ghosts[ i ]->render( *this );
   }
 }
@@ -270,7 +274,7 @@ void Game::prepareLights() {
 
   light += this->prepareMainLight( light );
 
-  for ( int i = 0; i < 3; ++i ) {
+  for ( int i = 0; i < GHOSTS_COUNT; ++i ) {
     this->ghosts[ i ]->updateGlLight( GL_LIGHT0 + light++ );
   }
 
