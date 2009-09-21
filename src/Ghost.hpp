@@ -5,6 +5,7 @@
 #include "MovingObject.hpp"
 #include "Light.hpp"
 #include "Material.hpp"
+#include "gl.h"
 #include <QGLWidget>
 
 class Ghost : public MovingObject {

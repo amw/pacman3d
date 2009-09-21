@@ -1,5 +1,6 @@
 #include "Ghost.hpp"
 #include <QList>
+#include <math.h>
 
 Ghost::Ghost( GameBoard * board, double r, double g, double b )
   : MovingObject( board )

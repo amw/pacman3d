@@ -1,4 +1,5 @@
 #include "PacMan.hpp"
+#include <math.h>
 
 
 PacMan::PacMan( GameBoard * board )

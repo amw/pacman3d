@@ -2,7 +2,6 @@
 
 #include <QtCore>
 #include <QtGui>
-#include <QtOpenGL>
 
 int main( int argc, char ** argv ) {
   QApplication app( argc, argv );

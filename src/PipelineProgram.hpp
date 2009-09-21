@@ -1,6 +1,6 @@
 #include <QObject>
 #include <QVector>
-#include <QtOpenGL>
+#include "gl.h"
 
 class PipelineProgram : public QObject {
   Q_OBJECT

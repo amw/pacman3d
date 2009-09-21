@@ -1,5 +1,5 @@
-#include "GL/glew.h"
 #include "Game.hpp"
+#include "gl.h"
 #include <QApplication>
 #include <QKeyEvent>
 #include <QPaintEvent>

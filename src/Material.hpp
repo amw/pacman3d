@@ -2,7 +2,7 @@
 #define MATERIAL_HPP
 
 #include "LightData.hpp"
-#include <QtOpenGL>
+#include "gl.h"
 
 class Material : public LightData {
   public:

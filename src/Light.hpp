@@ -2,7 +2,7 @@
 #define LIGHT_HPP
 
 #include "LightData.hpp"
-#include <QtOpenGL>
+#include "gl.h"
 
 class Light : public LightData {
   public:

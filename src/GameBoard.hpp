@@ -2,6 +2,7 @@
 #define GAMEBOARD_HPP
 
 #include "Material.hpp"
+#include "gl.h"
 #include <QGLWidget>
 #include <QString>
 #include <QFile>
