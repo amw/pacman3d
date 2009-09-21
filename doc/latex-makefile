@@ -1,0 +1,24 @@
+LATEXCMD=latex --src-specials -interaction=nonstopmode
+DVIPSCMD=dvips -t a4 -Ppdf
+PS2PDFCMD=ps2pdf14
+
+all: pdf
+
+pdf: refman.pdf
+
+refman.pdf: refman.tex
+	$(LATEXCMD) refman.tex
+	makeindex refman.idx
+	$(LATEXCMD) refman.tex
+	latex_count=5 ; \
+	while egrep -s 'Rerun (LaTeX|to get cross-references right)' refman.log && [ $$latex_count -gt 0 ] ;\
+	    do \
+	      echo "Rerunning latex...." ;\
+	      $(LATEXCMD) refman.tex ;\
+	      latex_count=`expr $$latex_count - 1` ;\
+	    done
+	$(DVIPSCMD) -o refman.ps refman.dvi
+	$(PS2PDFCMD) refman.ps refman.pdf
+
+clean:
+	rm -f *.ps *.dvi *.aux *.toc *.idx *.ind *.ilg *.log *.out
