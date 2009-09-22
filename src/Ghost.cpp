@@ -64,6 +64,7 @@ void Ghost::render( QGLWidget & ) {
 }
 
 void Ghost::updateGlLight( GLenum light ) {
+  glEnable( light );
   this->light.setPosition( this->position.x(), this->position.y(), 0.5f );
   this->light.updateGlState( light );
 }
