@@ -48,14 +48,6 @@ Game::~Game() {
   delete this->shaderProgram;
 }
 
-QSize Game::minimumSizeHint() const {
-  return QSize( 200, 200 );
-}
-
-QSize Game::sizeHint() const {
-  return QSize( 400, 400 );
-}
-
 bool Game::initialize() {
   if ( ! this->board.initialize() ) {
     return false;

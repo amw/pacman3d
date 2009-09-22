@@ -23,8 +23,6 @@ class Game : public QGLWidget {
   public:
     Game( QWidget* parent );
     ~Game();
-    QSize minimumSizeHint() const;
-    QSize sizeHint() const;
     virtual void keyPressEvent( QKeyEvent* event );
     bool initialize();
     void start();

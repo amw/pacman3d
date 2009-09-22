@@ -4,7 +4,8 @@
 #include <QHBoxLayout>
 
 GameWindow::GameWindow( QWidget* parent )
-  : QWidget( parent )
+  : QWidget( parent ),
+    lastSize( 400, 400 )
 {
   this->setWindowTitle( trUtf8( "Pacman 3d" ) );
 
@@ -35,6 +36,14 @@ bool GameWindow::initialize() {
   return true;
 }
 
+QSize GameWindow::minimumSizeHint() const {
+  return QSize( 200, 200 );
+}
+
+QSize GameWindow::sizeHint() const {
+  return this->lastSize;
+}
+
 void GameWindow::keyPressEvent( QKeyEvent* event ) {
   if ( event->key() == Qt::Key_F ) {
     this->game->clearFocus();
@@ -44,6 +53,7 @@ void GameWindow::keyPressEvent( QKeyEvent* event ) {
       this->activateWindow();
     }
     else {
+      this->lastSize = this->size();
       this->showFullScreen();
       this->setContentsMargins( -20, -20, -20, -20 );
     }
