@@ -52,7 +52,6 @@ class GameBoard : public QObject {
     int width;
     int height;
     int** blocks;
-    bool allocatedBlocks;
     QPointF player1Start;
     QVector< QPointF > ghostStarts;
     QList< QPointF > pacDots;

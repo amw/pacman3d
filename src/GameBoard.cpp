@@ -7,11 +7,11 @@
 
 GameBoard::GameBoard( QString name )
   : name( name ),
-    allocatedBlocks( false )
+    blocks( 0 )
 {}
 
 GameBoard::~GameBoard() {
-  if ( this->allocatedBlocks ) {
+  if ( this->blocks ) {
     for ( int y = 0; y < this->height; ++y ) {
       delete[] this->blocks[ y ];
     }
@@ -24,7 +24,7 @@ GameBoard::~GameBoard() {
 }
 
 bool GameBoard::initialize() {
-  if ( this->allocatedBlocks ) {
+  if ( this->blocks ) {
     return false;
   }
 
@@ -108,8 +108,6 @@ void GameBoard::initBlocksToWalls() {
     this->blocks[ y ] = new int[ this->width ];
     memcpy( this->blocks[ y ], rowOfWalls, rowBytes );
   }
-
-  this->allocatedBlocks = true;
 
   delete[] rowOfWalls;
 }

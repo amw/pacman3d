@@ -5,6 +5,7 @@
 
 GameWindow::GameWindow( QWidget* parent )
   : QWidget( parent ),
+    game( 0 ),
     lastSize( 400, 400 )
 {
   this->setWindowTitle( trUtf8( "Pacman 3d" ) );

@@ -15,6 +15,7 @@ Game::Game( QWidget* parent )
     ),
     board( "original" ),
     hero( & this->board ),
+    shaderProgram( 0 ),
     timer( this ),
     motionBlurFrames( 0 ),
     background( QColor::fromRgbF( 0.2f, 0.2f, 0.2f ) ),
