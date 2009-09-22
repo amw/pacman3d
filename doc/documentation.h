@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @file doc/documentation.php
+ * @file doc/documentation.h
  *
  * @brief Documentation-only file.
  *

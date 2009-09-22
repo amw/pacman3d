@@ -16,7 +16,7 @@ clean:
 
 doc: doc/doxygen
 
-doc/doxygen: src/* doc/documentation.php doc/Doxyfile
+doc/doxygen: src/*.cpp src/*.hpp src/*.h doc/documentation.h doc/Doxyfile
 	@doxygen doc/Doxyfile
 	@echo "Html documentation updated."
 
