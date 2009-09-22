@@ -40,6 +40,7 @@ class Game : public QGLWidget {
   private:
     void paintWithMotionBlur( int timeStep );
     void paintFrame( int timeStep );
+    void updatePositions( int timeStep );
     void printFpsReport();
     void refreshCamera();
     void initializeShaders();
@@ -53,6 +54,7 @@ class Game : public QGLWidget {
     Ghost* ghosts[ GHOSTS_COUNT ];
     int lifes;
     int points;
+    bool paused;
 
     bool shadersAreSupported;
     bool usingShaders;

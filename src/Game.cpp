@@ -63,6 +63,7 @@ bool Game::initialize() {
 
   this->lifes = 3;
   this->points = 0;
+  this->paused = true;
 
   this->hero.setPosition( this->board.getPlayer1Start() );
   this->hero.setVelocity( 3.0f, 0 );
@@ -190,23 +191,8 @@ void Game::paintWithMotionBlur( int timeStep ) {
 }
 
 void Game::paintFrame( int timeStep ) {
-  this->hero.updatePosition( timeStep );
-  for ( int i = 0; i < GHOSTS_COUNT; ++i ) {
-    this->ghosts[ i ]->updatePosition( timeStep );
-
-    if ( this->ghosts[ i ]->collidesWith( this->hero ) ) {
-      if ( this->lastPlayerDeath.elapsed() > INVULNERABILITY_TIME ) {
-        this->lastPlayerDeath.restart();
-        this->hero.setPosition( this->board.getPlayer1Start() );
-        if ( --this->lifes < 0 ) {
-          qDebug() << "Game over.";
-          QCoreApplication::exit( 0 );
-        }
-        else {
-          qDebug() << "You have" << this->lifes << "lives left.";
-        }
-      }
-    }
+  if ( ! this->paused ) {
+    this->updatePositions( timeStep );
   }
 
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -237,6 +223,27 @@ void Game::paintFrame( int timeStep ) {
 
   for ( int i = 0; i < GHOSTS_COUNT; ++i ) {
     this->ghosts[ i ]->render( *this );
+  }
+}
+
+void Game::updatePositions( int timeStep ) {
+  this->hero.updatePosition( timeStep );
+  for ( int i = 0; i < GHOSTS_COUNT; ++i ) {
+    this->ghosts[ i ]->updatePosition( timeStep );
+
+    if ( this->ghosts[ i ]->collidesWith( this->hero ) ) {
+      if ( this->lastPlayerDeath.elapsed() > INVULNERABILITY_TIME ) {
+        this->lastPlayerDeath.restart();
+        this->hero.setPosition( this->board.getPlayer1Start() );
+        if ( --this->lifes < 0 ) {
+          qDebug() << "Game over.";
+          QCoreApplication::exit( 0 );
+        }
+        else {
+          qDebug() << "You have" << this->lifes << "lives left.";
+        }
+      }
+    }
   }
 }
 
@@ -359,18 +366,34 @@ void Game::playerCollectedPoint() {
 void Game::keyPressEvent( QKeyEvent* event ) {
   if ( event->key() == Qt::Key_Left ) {
     this->hero.setDesiredDirection( QPoint( -1, 0 ) );
+    if ( this->paused ) {
+      qDebug() << "Resuming";
+      this->paused = false;
+    }
     event->accept();
   }
   else if ( event->key() == Qt::Key_Right ) {
     this->hero.setDesiredDirection( QPoint( 1, 0 ) );
+    if ( this->paused ) {
+      qDebug() << "Resuming";
+      this->paused = false;
+    }
     event->accept();
   }
   else if ( event->key() == Qt::Key_Up ) {
     this->hero.setDesiredDirection( QPoint( 0, 1 ) );
+    if ( this->paused ) {
+      qDebug() << "Resuming";
+      this->paused = false;
+    }
     event->accept();
   }
   else if ( event->key() == Qt::Key_Down ) {
     this->hero.setDesiredDirection( QPoint( 0, -1 ) );
+    if ( this->paused ) {
+      qDebug() << "Resuming";
+      this->paused = false;
+    }
     event->accept();
   }
   else if ( event->key() == Qt::Key_0 ) {
@@ -446,6 +469,16 @@ void Game::keyPressEvent( QKeyEvent* event ) {
       qDebug() << "You need OpenGL 2.0 to use shaders.";
     }
     event->accept();
+  }
+  else if ( event->key() == Qt::Key_Space ) {
+    if ( this->paused ) {
+      qDebug() << "Resuming";
+      this->paused = false;
+    }
+    else {
+      qDebug() << "Pausing";
+      this->paused = true;
+    }
   }
   else {
     event->ignore();
