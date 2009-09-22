@@ -119,7 +119,7 @@ bool PipelineProgram::enable( bool enable ) {
   return true;
 }
 
-GLint PipelineProgram::getUniformLocation( char * name ) {
+GLint PipelineProgram::getUniformLocation( const char * name ) {
   return glGetUniformLocation( this->id, name );
 }
 

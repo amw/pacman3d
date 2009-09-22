@@ -12,7 +12,7 @@ class PipelineProgram : public QObject {
     bool link();
     bool isLinked();
     bool enable( bool enable );
-    GLint getUniformLocation( char * name );
+    GLint getUniformLocation( const char * name );
 
   private:
     void printShaderLog( GLuint shader );
