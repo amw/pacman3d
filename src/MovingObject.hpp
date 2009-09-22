@@ -35,6 +35,7 @@ class MovingObject : public QObject {
     GameBoard * board;
     QPointF position;
     QPoint direction;
+    QPoint lastDirection;
     double velocity;
     double radius;
 };

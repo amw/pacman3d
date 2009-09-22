@@ -5,6 +5,7 @@
 
 MovingObject::MovingObject( GameBoard * board ) :
   board( board ),
+  lastDirection( 0, -1 ),
   velocity( 0.0f ),
   radius( 0.0f )
 {
@@ -92,6 +93,8 @@ void MovingObject::updatePosition( int timeStep ) {
   if ( this->direction.isNull() ) {
     return;
   }
+
+  this->lastDirection = this->direction;
 
   double timeFactor = timeStep / 1000.0f;
 

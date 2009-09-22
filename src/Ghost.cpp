@@ -45,6 +45,20 @@ void Ghost::render( QGLWidget & ) {
     this->position.y(),
     0.5f
   );
+
+  double angle = 0.0f;
+
+  if ( this->lastDirection.y() == -1 ) {
+    angle = 180.0f;
+  }
+  else if ( this->lastDirection.x() == 1 ) {
+    angle = -90.0f;
+  }
+  else if ( this->lastDirection.x() == -1 ) {
+    angle = 90.0f;
+  }
+
+  glRotatef( angle, 0.0f, 0.0f, 1.0f );
   glCallList( this->sphereList );
   glPopMatrix();
 }
